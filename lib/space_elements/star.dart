@@ -1,6 +1,7 @@
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/model/star_data.dart';
+import 'package:game_test_bonfire/main.dart';
 
 class Star extends GameDecoration with Lighting, ObjectCollision {
   Star(StarData data)

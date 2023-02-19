@@ -7,6 +7,7 @@ part of 'star_data.dart';
 // **************************************************************************
 
 Map<String, dynamic> _$StarDataToJson(StarData instance) => <String, dynamic>{
+      'name': instance.name,
       'position': const Vector2Serialiser().toJson(instance.position),
       'type': _$StarBaseEnumMap[instance.type]!,
     };
@@ -18,6 +19,7 @@ const _$StarBaseEnumMap = {
 };
 
 _$_StarData _$$_StarDataFromJson(Map<String, dynamic> json) => _$_StarData(
+      name: json['name'] as String,
       position: const Vector2Serialiser()
           .fromJson(json['position'] as Map<String, double>),
       type: $enumDecode(_$StarBaseEnumMap, json['type']),
@@ -25,6 +27,7 @@ _$_StarData _$$_StarDataFromJson(Map<String, dynamic> json) => _$_StarData(
 
 Map<String, dynamic> _$$_StarDataToJson(_$_StarData instance) =>
     <String, dynamic>{
+      'name': instance.name,
       'position': const Vector2Serialiser().toJson(instance.position),
       'type': _$StarBaseEnumMap[instance.type]!,
     };

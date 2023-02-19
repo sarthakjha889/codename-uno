@@ -41,6 +41,9 @@ dependencies:
   ml_linalg: ^13.11.28
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
+  hydrated_bloc: ^9.1.0
+  path_provider: ^2.0.12
+  flutter_bloc: ^8.1.2
 
 dev_dependencies:
   flutter_test:

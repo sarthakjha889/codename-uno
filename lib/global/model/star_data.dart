@@ -35,6 +35,7 @@ enum StarBase {
 class StarData with _$StarData {
   const StarData._();
   const factory StarData({
+    required String name,
     @Vector2Serialiser() required Vector2 position,
     @ColorSerialiser() required StarBase type,
   }) = _StarData;

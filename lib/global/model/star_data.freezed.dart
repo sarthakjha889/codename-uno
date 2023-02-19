@@ -20,6 +20,7 @@ StarData _$StarDataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$StarData {
+  String get name => throw _privateConstructorUsedError;
   @Vector2Serialiser()
   Vector2 get position => throw _privateConstructorUsedError;
   @ColorSerialiser()
@@ -37,7 +38,8 @@ abstract class $StarDataCopyWith<$Res> {
       _$StarDataCopyWithImpl<$Res, StarData>;
   @useResult
   $Res call(
-      {@Vector2Serialiser() Vector2 position,
+      {String name,
+      @Vector2Serialiser() Vector2 position,
       @ColorSerialiser() StarBase type});
 }
 
@@ -54,10 +56,15 @@ class _$StarDataCopyWithImpl<$Res, $Val extends StarData>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? name = null,
     Object? position = null,
     Object? type = null,
   }) {
     return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       position: null == position
           ? _value.position
           : position // ignore: cast_nullable_to_non_nullable
@@ -78,7 +85,8 @@ abstract class _$$_StarDataCopyWith<$Res> implements $StarDataCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {@Vector2Serialiser() Vector2 position,
+      {String name,
+      @Vector2Serialiser() Vector2 position,
       @ColorSerialiser() StarBase type});
 }
 
@@ -93,10 +101,15 @@ class __$$_StarDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? name = null,
     Object? position = null,
     Object? type = null,
   }) {
     return _then(_$_StarData(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       position: null == position
           ? _value.position
           : position // ignore: cast_nullable_to_non_nullable
@@ -113,13 +126,16 @@ class __$$_StarDataCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_StarData extends _StarData {
   const _$_StarData(
-      {@Vector2Serialiser() required this.position,
+      {required this.name,
+      @Vector2Serialiser() required this.position,
       @ColorSerialiser() required this.type})
       : super._();
 
   factory _$_StarData.fromJson(Map<String, dynamic> json) =>
       _$$_StarDataFromJson(json);
 
+  @override
+  final String name;
   @override
   @Vector2Serialiser()
   final Vector2 position;
@@ -129,7 +145,7 @@ class _$_StarData extends _StarData {
 
   @override
   String toString() {
-    return 'StarData(position: $position, type: $type)';
+    return 'StarData(name: $name, position: $position, type: $type)';
   }
 
   @override
@@ -137,6 +153,7 @@ class _$_StarData extends _StarData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_StarData &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.position, position) ||
                 other.position == position) &&
             (identical(other.type, type) || other.type == type));
@@ -144,7 +161,7 @@ class _$_StarData extends _StarData {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, position, type);
+  int get hashCode => Object.hash(runtimeType, name, position, type);
 
   @JsonKey(ignore: true)
   @override
@@ -162,12 +179,15 @@ class _$_StarData extends _StarData {
 
 abstract class _StarData extends StarData {
   const factory _StarData(
-      {@Vector2Serialiser() required final Vector2 position,
+      {required final String name,
+      @Vector2Serialiser() required final Vector2 position,
       @ColorSerialiser() required final StarBase type}) = _$_StarData;
   const _StarData._() : super._();
 
   factory _StarData.fromJson(Map<String, dynamic> json) = _$_StarData.fromJson;
 
+  @override
+  String get name;
   @override
   @Vector2Serialiser()
   Vector2 get position;
