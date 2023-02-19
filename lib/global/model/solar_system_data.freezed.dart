@@ -23,6 +23,7 @@ mixin _$SolarSystemData {
   String get name => throw _privateConstructorUsedError;
   StarData get star => throw _privateConstructorUsedError;
   List<PlanetData> get planets => throw _privateConstructorUsedError;
+  String get backgroundSpritePath => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,7 +37,11 @@ abstract class $SolarSystemDataCopyWith<$Res> {
           SolarSystemData value, $Res Function(SolarSystemData) then) =
       _$SolarSystemDataCopyWithImpl<$Res, SolarSystemData>;
   @useResult
-  $Res call({String name, StarData star, List<PlanetData> planets});
+  $Res call(
+      {String name,
+      StarData star,
+      List<PlanetData> planets,
+      String backgroundSpritePath});
 
   $StarDataCopyWith<$Res> get star;
 }
@@ -57,6 +62,7 @@ class _$SolarSystemDataCopyWithImpl<$Res, $Val extends SolarSystemData>
     Object? name = null,
     Object? star = null,
     Object? planets = null,
+    Object? backgroundSpritePath = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -71,6 +77,10 @@ class _$SolarSystemDataCopyWithImpl<$Res, $Val extends SolarSystemData>
           ? _value.planets
           : planets // ignore: cast_nullable_to_non_nullable
               as List<PlanetData>,
+      backgroundSpritePath: null == backgroundSpritePath
+          ? _value.backgroundSpritePath
+          : backgroundSpritePath // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 
@@ -91,7 +101,11 @@ abstract class _$$_SolarSystemDataCopyWith<$Res>
       __$$_SolarSystemDataCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, StarData star, List<PlanetData> planets});
+  $Res call(
+      {String name,
+      StarData star,
+      List<PlanetData> planets,
+      String backgroundSpritePath});
 
   @override
   $StarDataCopyWith<$Res> get star;
@@ -111,6 +125,7 @@ class __$$_SolarSystemDataCopyWithImpl<$Res>
     Object? name = null,
     Object? star = null,
     Object? planets = null,
+    Object? backgroundSpritePath = null,
   }) {
     return _then(_$_SolarSystemData(
       name: null == name
@@ -125,6 +140,10 @@ class __$$_SolarSystemDataCopyWithImpl<$Res>
           ? _value._planets
           : planets // ignore: cast_nullable_to_non_nullable
               as List<PlanetData>,
+      backgroundSpritePath: null == backgroundSpritePath
+          ? _value.backgroundSpritePath
+          : backgroundSpritePath // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -135,7 +154,8 @@ class _$_SolarSystemData extends _SolarSystemData {
   const _$_SolarSystemData(
       {required this.name,
       required this.star,
-      required final List<PlanetData> planets})
+      required final List<PlanetData> planets,
+      required this.backgroundSpritePath})
       : _planets = planets,
         super._();
 
@@ -155,8 +175,11 @@ class _$_SolarSystemData extends _SolarSystemData {
   }
 
   @override
+  final String backgroundSpritePath;
+
+  @override
   String toString() {
-    return 'SolarSystemData(name: $name, star: $star, planets: $planets)';
+    return 'SolarSystemData(name: $name, star: $star, planets: $planets, backgroundSpritePath: $backgroundSpritePath)';
   }
 
   @override
@@ -166,13 +189,15 @@ class _$_SolarSystemData extends _SolarSystemData {
             other is _$_SolarSystemData &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.star, star) || other.star == star) &&
-            const DeepCollectionEquality().equals(other._planets, _planets));
+            const DeepCollectionEquality().equals(other._planets, _planets) &&
+            (identical(other.backgroundSpritePath, backgroundSpritePath) ||
+                other.backgroundSpritePath == backgroundSpritePath));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, name, star, const DeepCollectionEquality().hash(_planets));
+  int get hashCode => Object.hash(runtimeType, name, star,
+      const DeepCollectionEquality().hash(_planets), backgroundSpritePath);
 
   @JsonKey(ignore: true)
   @override
@@ -192,7 +217,8 @@ abstract class _SolarSystemData extends SolarSystemData {
   const factory _SolarSystemData(
       {required final String name,
       required final StarData star,
-      required final List<PlanetData> planets}) = _$_SolarSystemData;
+      required final List<PlanetData> planets,
+      required final String backgroundSpritePath}) = _$_SolarSystemData;
   const _SolarSystemData._() : super._();
 
   factory _SolarSystemData.fromJson(Map<String, dynamic> json) =
@@ -204,6 +230,8 @@ abstract class _SolarSystemData extends SolarSystemData {
   StarData get star;
   @override
   List<PlanetData> get planets;
+  @override
+  String get backgroundSpritePath;
   @override
   @JsonKey(ignore: true)
   _$$_SolarSystemDataCopyWith<_$_SolarSystemData> get copyWith =>

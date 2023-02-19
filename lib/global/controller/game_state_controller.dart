@@ -1,4 +1,3 @@
-
 // import 'package:bonfire/bonfire.dart';
 
 import 'package:bonfire/bonfire.dart';
@@ -64,6 +63,8 @@ class GameStateController extends Cubit<GameState> {
     }
     return SolarSystemData(
       name: 'Solar system name',
+      backgroundSpritePath:
+          'space/Space_Stars${Alfred.getRandomNumber(min: 1, max: 8).toInt()}.png',
       star: star,
       planets: planets,
     );

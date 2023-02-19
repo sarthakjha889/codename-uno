@@ -70,7 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return BlocBuilder<GameStateController, GameState>(
         bloc: gameStateController,
         builder: (context, state) {
-          print(state.isReady);
           return BonfireWidget(
             lightingColorGame: Colors.white.withOpacity(0.01),
             overlayBuilderMap: {
@@ -92,37 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
             },
             decorations: system1.getDecorations(),
-            // decorations: [
-            //   Star(
-            //     Alfred.getMapCenter(),
-            //     spritesheetPath: "planets/Suns/Yellow Sun/spritesheet.png",
-            //   ),
-            //   Planet(
-            //     Alfred.getMapCenter(),
-            //     name: 'Earth',
-            //     planetSize: Vector2(192, 192),
-            //     revolutionSpeed: 0.02,
-            //     starDistance: (2 * Alfred.tileSize).toDouble(),
-            //     spritesheetPath: "planets/Solid/Tropical/spritesheet.png",
-            //   ),
-            //   Planet(
-            //     Alfred.getMapCenter(),
-            //     name: 'Volkan',
-            //     planetSize: Vector2(128, 128),
-            //     revolutionSpeed: 0.03,
-            //     starDistance: (4 * Alfred.tileSize).toDouble(),
-            //     spritesheetPath: "planets/Solid/Magma/spritesheet.png",
-            //   ),
-            //   Planet(
-            //     Alfred.getMapCenter(),
-            //     name: 'Oseania',
-            //     planetSize: Vector2(256, 256),
-            //     revolutionSpeed: 0.01,
-            //     starDistance: (6 * Alfred.tileSize).toDouble(),
-            //     spritesheetPath: "planets/Solid/Ocean/spritesheet.png",
-            //   ),
-            // ],
-            // decorations: Alfred.getForestDecorations(mapSize: mapSize),
             initialActiveOverlays: [
               'miniMap',
             ],
@@ -130,11 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
               directional: JoystickDirectional(isFixed: false),
             ),
             player: player,
-            // enemies: List.generate(
-            //   5,
-            //   (index) => MyEnemy(Vector2(((index * 50) + 50), ((index * 50) + 50))),
-            // ),
-
             cameraConfig: CameraConfig(
               moveOnlyMapArea: false,
               target: player,
@@ -142,51 +105,12 @@ class _MyHomePageState extends State<MyHomePage> {
               zoom: 0.4,
             ),
             gameController: gameController,
-            // decorations: [
-            //   ...List.generate(
-            //     999,
-            //     (index) => BushDecoration(
-            //       Vector2(
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //       ),
-            //     ),
-            //   ),
-            //   ...List.generate(
-            //     999,
-            //     (index) => TreeDecoration(
-            //       Vector2(
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //       ),
-            //     ),
-            //   ),
-            //   ...List.generate(
-            //     999,
-            //     (index) => FlowerDecoration(
-            //       Vector2(
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //       ),
-            //     ),
-            //   ),
-            //   ...List.generate(
-            //     999,
-            //     (index) => GrassDecoration(
-            //       Vector2(
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //         Alfred.getRandomNumber(max: mapSize * 64, min: 0),
-            //       ),
-            //     ),
-            //   ),
-            // ],
-
             map: MatrixMapGenerator.generate(
               axisInverted: true,
               matrix: test,
               builder: (ItemMatrixProperties prop) {
                 TileModelSprite? sprite = TileModelSprite(
-                  path: 'space/Space_Stars2.png',
+                  path: system1.solarSystemData.backgroundSpritePath,
                 );
                 return TileModel(
                   x: prop.position.x,

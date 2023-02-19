@@ -14,6 +14,7 @@ class SolarSystemData with _$SolarSystemData {
     required String name,
     required StarData star,
     required List<PlanetData> planets,
+    required String backgroundSpritePath,
   }) = _SolarSystemData;
 
   factory SolarSystemData.fromJson(Map<String, Object?> json) =>
