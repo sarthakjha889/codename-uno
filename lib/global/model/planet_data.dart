@@ -1,12 +1,12 @@
 // This file is "main.dart"
 import 'package:bonfire/bonfire.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:game_test_bonfire/global/vector2_serialiser.dart';
+import 'package:game_test_bonfire/global/serialisers/vector2_serialiser.dart';
 
 part 'planet_data.freezed.dart';
 part 'planet_data.g.dart';
 
-enum SolidVariant {
+enum SolidPlanetVariant {
   airless,
   aquamarine,
   arid,
@@ -29,7 +29,7 @@ enum SolidVariant {
   tropical,
 }
 
-enum GasVariant {
+enum GasPlanetVariant {
   blue,
   green,
   orange,
@@ -48,15 +48,15 @@ class PlanetData with _$PlanetData {
   const PlanetData._();
   @Assert('solidVariant != null || gasVariant != null')
   const factory PlanetData({
-    @Vector2Serialiser() required Vector2 panetSize,
+    @Vector2Serialiser() required Vector2 planetSize,
     @Vector2Serialiser() required Vector2 starPosition,
     required String name,
     required String spritesheetPath,
     required double starDistance,
     required double revolutionSpeed,
     required PlanetBase type,
-    SolidVariant? solidVariant,
-    GasVariant? gasVariant,
+    SolidPlanetVariant? solidVariant,
+    GasPlanetVariant? gasVariant,
   }) = _PlanetData;
 
   factory PlanetData.fromJson(Map<String, Object?> json) =>

@@ -1,18 +1,12 @@
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
-import 'package:game_test_bonfire/global/helpers.dart';
+import 'package:game_test_bonfire/global/model/star_data.dart';
 
 class Star extends GameDecoration with Lighting, ObjectCollision {
-  final String spritesheetPath;
-  final Color lightiningColor;
-
-  Star(
-    Vector2 position, {
-    required this.spritesheetPath,
-    required this.lightiningColor,
-  }) : super.withAnimation(
+  Star(StarData data)
+      : super.withAnimation(
           animation: SpriteAnimation.load(
-            spritesheetPath,
+            data.type.spritesheetPath,
             SpriteAnimationData.sequenced(
               amount: 4,
               stepTime: 0.1,
@@ -20,13 +14,13 @@ class Star extends GameDecoration with Lighting, ObjectCollision {
               amountPerRow: 4,
             ),
           ),
-          position: position,
+          position: data.position,
           size: Vector2(256, 256),
         ) {
     setupLighting(
       LightingConfig(
         radius: 200,
-        color: lightiningColor,
+        color: data.type.lighting.withOpacity(0.5),
         withPulse: true,
       ),
     );

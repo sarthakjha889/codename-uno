@@ -21,7 +21,7 @@ PlanetData _$PlanetDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PlanetData {
   @Vector2Serialiser()
-  Vector2 get panetSize => throw _privateConstructorUsedError;
+  Vector2 get planetSize => throw _privateConstructorUsedError;
   @Vector2Serialiser()
   Vector2 get starPosition => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
@@ -29,8 +29,8 @@ mixin _$PlanetData {
   double get starDistance => throw _privateConstructorUsedError;
   double get revolutionSpeed => throw _privateConstructorUsedError;
   PlanetBase get type => throw _privateConstructorUsedError;
-  SolidVariant? get solidVariant => throw _privateConstructorUsedError;
-  GasVariant? get gasVariant => throw _privateConstructorUsedError;
+  SolidPlanetVariant? get solidVariant => throw _privateConstructorUsedError;
+  GasPlanetVariant? get gasVariant => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -45,15 +45,15 @@ abstract class $PlanetDataCopyWith<$Res> {
       _$PlanetDataCopyWithImpl<$Res, PlanetData>;
   @useResult
   $Res call(
-      {@Vector2Serialiser() Vector2 panetSize,
+      {@Vector2Serialiser() Vector2 planetSize,
       @Vector2Serialiser() Vector2 starPosition,
       String name,
       String spritesheetPath,
       double starDistance,
       double revolutionSpeed,
       PlanetBase type,
-      SolidVariant? solidVariant,
-      GasVariant? gasVariant});
+      SolidPlanetVariant? solidVariant,
+      GasPlanetVariant? gasVariant});
 }
 
 /// @nodoc
@@ -69,7 +69,7 @@ class _$PlanetDataCopyWithImpl<$Res, $Val extends PlanetData>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? panetSize = null,
+    Object? planetSize = null,
     Object? starPosition = null,
     Object? name = null,
     Object? spritesheetPath = null,
@@ -80,9 +80,9 @@ class _$PlanetDataCopyWithImpl<$Res, $Val extends PlanetData>
     Object? gasVariant = freezed,
   }) {
     return _then(_value.copyWith(
-      panetSize: null == panetSize
-          ? _value.panetSize
-          : panetSize // ignore: cast_nullable_to_non_nullable
+      planetSize: null == planetSize
+          ? _value.planetSize
+          : planetSize // ignore: cast_nullable_to_non_nullable
               as Vector2,
       starPosition: null == starPosition
           ? _value.starPosition
@@ -111,11 +111,11 @@ class _$PlanetDataCopyWithImpl<$Res, $Val extends PlanetData>
       solidVariant: freezed == solidVariant
           ? _value.solidVariant
           : solidVariant // ignore: cast_nullable_to_non_nullable
-              as SolidVariant?,
+              as SolidPlanetVariant?,
       gasVariant: freezed == gasVariant
           ? _value.gasVariant
           : gasVariant // ignore: cast_nullable_to_non_nullable
-              as GasVariant?,
+              as GasPlanetVariant?,
     ) as $Val);
   }
 }
@@ -129,15 +129,15 @@ abstract class _$$_PlanetDataCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@Vector2Serialiser() Vector2 panetSize,
+      {@Vector2Serialiser() Vector2 planetSize,
       @Vector2Serialiser() Vector2 starPosition,
       String name,
       String spritesheetPath,
       double starDistance,
       double revolutionSpeed,
       PlanetBase type,
-      SolidVariant? solidVariant,
-      GasVariant? gasVariant});
+      SolidPlanetVariant? solidVariant,
+      GasPlanetVariant? gasVariant});
 }
 
 /// @nodoc
@@ -151,7 +151,7 @@ class __$$_PlanetDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? panetSize = null,
+    Object? planetSize = null,
     Object? starPosition = null,
     Object? name = null,
     Object? spritesheetPath = null,
@@ -162,9 +162,9 @@ class __$$_PlanetDataCopyWithImpl<$Res>
     Object? gasVariant = freezed,
   }) {
     return _then(_$_PlanetData(
-      panetSize: null == panetSize
-          ? _value.panetSize
-          : panetSize // ignore: cast_nullable_to_non_nullable
+      planetSize: null == planetSize
+          ? _value.planetSize
+          : planetSize // ignore: cast_nullable_to_non_nullable
               as Vector2,
       starPosition: null == starPosition
           ? _value.starPosition
@@ -193,11 +193,11 @@ class __$$_PlanetDataCopyWithImpl<$Res>
       solidVariant: freezed == solidVariant
           ? _value.solidVariant
           : solidVariant // ignore: cast_nullable_to_non_nullable
-              as SolidVariant?,
+              as SolidPlanetVariant?,
       gasVariant: freezed == gasVariant
           ? _value.gasVariant
           : gasVariant // ignore: cast_nullable_to_non_nullable
-              as GasVariant?,
+              as GasPlanetVariant?,
     ));
   }
 }
@@ -206,7 +206,7 @@ class __$$_PlanetDataCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_PlanetData extends _PlanetData {
   const _$_PlanetData(
-      {@Vector2Serialiser() required this.panetSize,
+      {@Vector2Serialiser() required this.planetSize,
       @Vector2Serialiser() required this.starPosition,
       required this.name,
       required this.spritesheetPath,
@@ -215,14 +215,15 @@ class _$_PlanetData extends _PlanetData {
       required this.type,
       this.solidVariant,
       this.gasVariant})
-      : super._();
+      : assert(solidVariant != null || gasVariant != null),
+        super._();
 
   factory _$_PlanetData.fromJson(Map<String, dynamic> json) =>
       _$$_PlanetDataFromJson(json);
 
   @override
   @Vector2Serialiser()
-  final Vector2 panetSize;
+  final Vector2 planetSize;
   @override
   @Vector2Serialiser()
   final Vector2 starPosition;
@@ -237,13 +238,13 @@ class _$_PlanetData extends _PlanetData {
   @override
   final PlanetBase type;
   @override
-  final SolidVariant? solidVariant;
+  final SolidPlanetVariant? solidVariant;
   @override
-  final GasVariant? gasVariant;
+  final GasPlanetVariant? gasVariant;
 
   @override
   String toString() {
-    return 'PlanetData(panetSize: $panetSize, starPosition: $starPosition, name: $name, spritesheetPath: $spritesheetPath, starDistance: $starDistance, revolutionSpeed: $revolutionSpeed, type: $type, solidVariant: $solidVariant, gasVariant: $gasVariant)';
+    return 'PlanetData(planetSize: $planetSize, starPosition: $starPosition, name: $name, spritesheetPath: $spritesheetPath, starDistance: $starDistance, revolutionSpeed: $revolutionSpeed, type: $type, solidVariant: $solidVariant, gasVariant: $gasVariant)';
   }
 
   @override
@@ -251,8 +252,8 @@ class _$_PlanetData extends _PlanetData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_PlanetData &&
-            (identical(other.panetSize, panetSize) ||
-                other.panetSize == panetSize) &&
+            (identical(other.planetSize, planetSize) ||
+                other.planetSize == planetSize) &&
             (identical(other.starPosition, starPosition) ||
                 other.starPosition == starPosition) &&
             (identical(other.name, name) || other.name == name) &&
@@ -273,7 +274,7 @@ class _$_PlanetData extends _PlanetData {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      panetSize,
+      planetSize,
       starPosition,
       name,
       spritesheetPath,
@@ -299,15 +300,15 @@ class _$_PlanetData extends _PlanetData {
 
 abstract class _PlanetData extends PlanetData {
   const factory _PlanetData(
-      {@Vector2Serialiser() required final Vector2 panetSize,
+      {@Vector2Serialiser() required final Vector2 planetSize,
       @Vector2Serialiser() required final Vector2 starPosition,
       required final String name,
       required final String spritesheetPath,
       required final double starDistance,
       required final double revolutionSpeed,
       required final PlanetBase type,
-      final SolidVariant? solidVariant,
-      final GasVariant? gasVariant}) = _$_PlanetData;
+      final SolidPlanetVariant? solidVariant,
+      final GasPlanetVariant? gasVariant}) = _$_PlanetData;
   const _PlanetData._() : super._();
 
   factory _PlanetData.fromJson(Map<String, dynamic> json) =
@@ -315,7 +316,7 @@ abstract class _PlanetData extends PlanetData {
 
   @override
   @Vector2Serialiser()
-  Vector2 get panetSize;
+  Vector2 get planetSize;
   @override
   @Vector2Serialiser()
   Vector2 get starPosition;
@@ -330,9 +331,9 @@ abstract class _PlanetData extends PlanetData {
   @override
   PlanetBase get type;
   @override
-  SolidVariant? get solidVariant;
+  SolidPlanetVariant? get solidVariant;
   @override
-  GasVariant? get gasVariant;
+  GasPlanetVariant? get gasVariant;
   @override
   @JsonKey(ignore: true)
   _$$_PlanetDataCopyWith<_$_PlanetData> get copyWith =>

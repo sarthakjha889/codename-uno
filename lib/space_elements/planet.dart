@@ -3,15 +3,12 @@ import 'dart:math';
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
+import 'package:game_test_bonfire/global/model/planet_data.dart';
 
 class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
-  final String spritesheetPath;
   late double orbitAngle;
   late Vector2 mapCenter;
-  final Vector2 planetSize;
-  final String name;
-  double starDistance;
-  double revolutionSpeed;
+  final PlanetData data;
 
   TextPaint textPaint = TextPaint(
       style: const TextStyle(
@@ -20,16 +17,10 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
     fontWeight: FontWeight.bold,
   ));
 
-  Planet(
-    Vector2 position, {
-    required this.spritesheetPath,
-    required this.starDistance,
-    required this.revolutionSpeed,
-    required this.planetSize,
-    required this.name,
-  }) : super.withAnimation(
+  Planet(this.data)
+      : super.withAnimation(
           animation: SpriteAnimation.load(
-            spritesheetPath,
+            data.spritesheetPath,
             SpriteAnimationData.sequenced(
               amount: 4,
               stepTime: 0.15,
@@ -37,8 +28,8 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
               amountPerRow: 4,
             ),
           ),
-          position: position,
-          size: planetSize,
+          position: data.starPosition,
+          size: data.planetSize,
         ) {
     mapCenter = Alfred.getMapCenter();
     anchor = Anchor.center;
@@ -56,10 +47,10 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
   @override
   void update(double dt) {
     super.update(dt);
-    orbitAngle = orbitAngle + revolutionSpeed * dt;
+    orbitAngle = orbitAngle + data.revolutionSpeed * dt;
     position = Vector2(
-      mapCenter.x + starDistance * cos(orbitAngle),
-      mapCenter.y + starDistance * sin(orbitAngle),
+      mapCenter.x + data.starDistance * cos(orbitAngle),
+      mapCenter.y + data.starDistance * sin(orbitAngle),
     );
   }
 
@@ -68,10 +59,10 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
     super.render(canvas);
     textPaint.render(
       canvas,
-      name.toUpperCase(),
+      data.name.toUpperCase(),
       Vector2(
-        position.x + ((planetSize.x / 2) + (name.length * 0.5)),
-        position.y + planetSize.y + 30,
+        position.x + ((data.planetSize.x / 2) + (data.name.length * 0.5)),
+        position.y + data.planetSize.y + 30,
       ),
       anchor: Anchor.bottomCenter,
     );

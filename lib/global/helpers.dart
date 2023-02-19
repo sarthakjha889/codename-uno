@@ -32,6 +32,10 @@ class Alfred {
     return list[getRandomNumber(max: list.length - 1, min: 0).toInt()];
   }
 
+  static T getRandomValueFromList<T>(List<T> list) {
+    return list[getRandomNumber(max: list.length - 1, min: 0).toInt()];
+  }
+
   static List<List<double>> generateNoiseMap({
     required int size,
     required double frequency,

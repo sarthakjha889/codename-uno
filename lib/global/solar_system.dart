@@ -1,7 +1,8 @@
 import 'package:bonfire/bonfire.dart';
-import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/constants.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
+import 'package:game_test_bonfire/global/model/planet_data.dart';
+import 'package:game_test_bonfire/global/model/star_data.dart';
 import 'package:game_test_bonfire/space_elements/planet.dart';
 import 'package:game_test_bonfire/space_elements/star.dart';
 import 'package:helpers/helpers.dart';
@@ -13,43 +14,49 @@ class SolarSystem {
 
   SolarSystem() {
     numberOfPlanets = Alfred.getRandomNumber(min: 1, max: 5).toInt();
-    String starSpritesheet = getRandomStarSpritesheet();
-    Color starLightColor;
-    if (starSpritesheet.contains('Blue')) {
-      starLightColor = Colors.blueAccent.withOpacity(0.5);
-    } else if (starSpritesheet.contains('Red')) {
-      starLightColor = Colors.redAccent.withOpacity(0.5);
-    } else {
-      starLightColor = Colors.yellowAccent.withOpacity(0.5);
-    }
     star = Star(
-      Alfred.getMapCenter(),
-      spritesheetPath: starSpritesheet,
-      lightiningColor: starLightColor,
+      StarData(
+        position: Alfred.getMapCenter(),
+        type: getRandomStarType(),
+      ),
     );
 
     for (int i = 1; i <= numberOfPlanets; i++) {
       double planetSize = Alfred.getRandomNumber(min: 128, max: 256);
+      PlanetBase base = getRandomPlanetBase();
+      SolidPlanetVariant? solidPlanetVariant;
+      GasPlanetVariant? gasPlanetVariant;
+      if (base == PlanetBase.solid) {
+        solidPlanetVariant = getRandomSolidPlanetVariant();
+      } else {
+        gasPlanetVariant = getRandomGasPlanetVariant();
+      }
       planets.add(
         Planet(
-          Alfred.getMapCenter(),
-          spritesheetPath: getRandomPlanetSpritesheet(),
-          starDistance:
-              (i * Alfred.getRandomNumber(max: 3, min: 2) * Alfred.tileSize)
-                  .toDouble(),
-          revolutionSpeed: Alfred.getRandomNumber(min: 1, max: 2) /
-              Alfred.getRandomNumber(min: 10, max: 20),
-          planetSize: Vector2(planetSize, planetSize),
-          name: getRandomPlanetName(),
+          PlanetData(
+            planetSize: Vector2(planetSize, planetSize),
+            starPosition: Alfred.getMapCenter(),
+            name: getRandomPlanetName(),
+            starDistance:
+                (i * Alfred.getRandomNumber(max: 3, min: 2) * Alfred.tileSize)
+                    .toDouble(),
+            revolutionSpeed: Alfred.getRandomNumber(min: 1, max: 2) /
+                Alfred.getRandomNumber(min: 10, max: 20),
+            type: base,
+            solidVariant: solidPlanetVariant,
+            gasVariant: gasPlanetVariant,
+            spritesheetPath: getPlanetSpritesheet(
+              base: base,
+              gasVariant: gasPlanetVariant,
+              solidVariant: solidPlanetVariant,
+            ),
+          ),
         ),
       );
     }
   }
 
   List<GameDecoration> getSystem() {
-    for (Planet planet in planets) {
-      print(planet.starDistance);
-    }
     return [star, ...planets];
   }
 
@@ -69,23 +76,31 @@ class SolarSystem {
         .join(' ');
   }
 
-  String getRandomStarSpritesheet() {
-    return 'planets/Suns/${Alfred.getRandomStringFromList(starVariants)} Sun/spritesheet.png';
+  PlanetBase getRandomPlanetBase() {
+    return Alfred.getRandomValueFromList(PlanetBase.values);
   }
 
-  String getRandomPlanetBase() {
-    return Alfred.getRandomStringFromList(planetBase);
+  SolidPlanetVariant getRandomSolidPlanetVariant() {
+    return Alfred.getRandomValueFromList(SolidPlanetVariant.values);
   }
 
-  String getRandomPlanetSpritesheet() {
-    String planetBase = getRandomPlanetBase();
-    switch (planetBase) {
-      case 'Solid':
-        return "planets/$planetBase/${Alfred.getRandomStringFromList(solidPlanetVariants)}/spritesheet.png";
-      case 'Gaseous':
-        return "planets/$planetBase/${Alfred.getRandomStringFromList(gasPlanetVariants)} Giant/spritesheet.png";
-      default:
-        return "planets/$planetBase/${Alfred.getRandomStringFromList(solidPlanetVariants)}/spritesheet.png";
+  GasPlanetVariant getRandomGasPlanetVariant() {
+    return Alfred.getRandomValueFromList(GasPlanetVariant.values);
+  }
+
+  StarBase getRandomStarType() {
+    return Alfred.getRandomValueFromList(StarBase.values);
+  }
+
+  String getPlanetSpritesheet({
+    required PlanetBase base,
+    SolidPlanetVariant? solidVariant,
+    GasPlanetVariant? gasVariant,
+  }) {
+    if (base == PlanetBase.solid) {
+      return "planets/Solid/${solidVariant?.name.toCapitalize()}/spritesheet.png";
+    } else {
+      return "planets/Gaseous/${gasVariant?.name.toCapitalize()} Giant/spritesheet.png";
     }
   }
 }
