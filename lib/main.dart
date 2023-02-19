@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bonfire/bonfire.dart';
-import 'package:game_test_bonfire/global/controller/game_state.dart';
+import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'package:game_test_bonfire/global/solar_system.dart';
