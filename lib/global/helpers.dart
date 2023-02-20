@@ -9,7 +9,7 @@ import 'package:game_test_bonfire/objects/decor/outdoor/tree.dart';
 
 class Alfred {
   static Random random = Random();
-  static int mapSize = 20;
+  static int mapSize = 25;
   static int tileSize = 256;
 
   static Vector2 getMapCenter() {
@@ -19,12 +19,12 @@ class Alfred {
     );
   }
 
-  static double getRandomNumber({int? min, int? max}) {
+  static int getRandomNumber({int? min, int? max}) {
     if (min != null && max != null) {
       ++max;
-      return min + random.nextInt(max - min).toDouble();
+      return min + random.nextInt(max - min);
     } else {
-      return random.nextInt(max ?? 9999).toDouble();
+      return random.nextInt(max ?? 9999);
     }
   }
 

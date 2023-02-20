@@ -20,7 +20,10 @@ SolarSystemData _$SolarSystemDataFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SolarSystemData {
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  @Vector2Serialiser()
+  Vector2 get position => throw _privateConstructorUsedError;
   StarData get star => throw _privateConstructorUsedError;
   List<PlanetData> get planets => throw _privateConstructorUsedError;
   String get backgroundSpritePath => throw _privateConstructorUsedError;
@@ -38,7 +41,9 @@ abstract class $SolarSystemDataCopyWith<$Res> {
       _$SolarSystemDataCopyWithImpl<$Res, SolarSystemData>;
   @useResult
   $Res call(
-      {String name,
+      {String id,
+      String name,
+      @Vector2Serialiser() Vector2 position,
       StarData star,
       List<PlanetData> planets,
       String backgroundSpritePath});
@@ -59,16 +64,26 @@ class _$SolarSystemDataCopyWithImpl<$Res, $Val extends SolarSystemData>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
+    Object? position = null,
     Object? star = null,
     Object? planets = null,
     Object? backgroundSpritePath = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      position: null == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Vector2,
       star: null == star
           ? _value.star
           : star // ignore: cast_nullable_to_non_nullable
@@ -102,7 +117,9 @@ abstract class _$$_SolarSystemDataCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name,
+      {String id,
+      String name,
+      @Vector2Serialiser() Vector2 position,
       StarData star,
       List<PlanetData> planets,
       String backgroundSpritePath});
@@ -122,16 +139,26 @@ class __$$_SolarSystemDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? name = null,
+    Object? position = null,
     Object? star = null,
     Object? planets = null,
     Object? backgroundSpritePath = null,
   }) {
     return _then(_$_SolarSystemData(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      position: null == position
+          ? _value.position
+          : position // ignore: cast_nullable_to_non_nullable
+              as Vector2,
       star: null == star
           ? _value.star
           : star // ignore: cast_nullable_to_non_nullable
@@ -152,7 +179,9 @@ class __$$_SolarSystemDataCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_SolarSystemData extends _SolarSystemData {
   const _$_SolarSystemData(
-      {required this.name,
+      {required this.id,
+      required this.name,
+      @Vector2Serialiser() required this.position,
       required this.star,
       required final List<PlanetData> planets,
       required this.backgroundSpritePath})
@@ -163,7 +192,12 @@ class _$_SolarSystemData extends _SolarSystemData {
       _$$_SolarSystemDataFromJson(json);
 
   @override
+  final String id;
+  @override
   final String name;
+  @override
+  @Vector2Serialiser()
+  final Vector2 position;
   @override
   final StarData star;
   final List<PlanetData> _planets;
@@ -179,7 +213,7 @@ class _$_SolarSystemData extends _SolarSystemData {
 
   @override
   String toString() {
-    return 'SolarSystemData(name: $name, star: $star, planets: $planets, backgroundSpritePath: $backgroundSpritePath)';
+    return 'SolarSystemData(id: $id, name: $name, position: $position, star: $star, planets: $planets, backgroundSpritePath: $backgroundSpritePath)';
   }
 
   @override
@@ -187,7 +221,10 @@ class _$_SolarSystemData extends _SolarSystemData {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_SolarSystemData &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.position, position) ||
+                other.position == position) &&
             (identical(other.star, star) || other.star == star) &&
             const DeepCollectionEquality().equals(other._planets, _planets) &&
             (identical(other.backgroundSpritePath, backgroundSpritePath) ||
@@ -196,7 +233,7 @@ class _$_SolarSystemData extends _SolarSystemData {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, name, star,
+  int get hashCode => Object.hash(runtimeType, id, name, position, star,
       const DeepCollectionEquality().hash(_planets), backgroundSpritePath);
 
   @JsonKey(ignore: true)
@@ -215,7 +252,9 @@ class _$_SolarSystemData extends _SolarSystemData {
 
 abstract class _SolarSystemData extends SolarSystemData {
   const factory _SolarSystemData(
-      {required final String name,
+      {required final String id,
+      required final String name,
+      @Vector2Serialiser() required final Vector2 position,
       required final StarData star,
       required final List<PlanetData> planets,
       required final String backgroundSpritePath}) = _$_SolarSystemData;
@@ -225,7 +264,12 @@ abstract class _SolarSystemData extends SolarSystemData {
       _$_SolarSystemData.fromJson;
 
   @override
+  String get id;
+  @override
   String get name;
+  @override
+  @Vector2Serialiser()
+  Vector2 get position;
   @override
   StarData get star;
   @override

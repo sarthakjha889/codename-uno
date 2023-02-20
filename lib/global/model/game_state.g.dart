@@ -8,19 +8,22 @@ part of 'game_state.dart';
 
 Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'isReady': instance.isReady,
-      'solarSystems': instance.solarSystems,
+      'galaxy': instance.galaxy,
+      'currentSolarSystem': instance.currentSolarSystem,
     };
 
 _$_GameState _$$_GameStateFromJson(Map<String, dynamic> json) => _$_GameState(
       isReady: json['isReady'] as bool? ?? true,
-      solarSystems: (json['solarSystems'] as List<dynamic>?)
-              ?.map((e) => SolarSystemData.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      galaxy: GalaxyData.fromJson(json['galaxy'] as Map<String, dynamic>),
+      currentSolarSystem: json['currentSolarSystem'] == null
+          ? null
+          : SolarSystemData.fromJson(
+              json['currentSolarSystem'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$_GameStateToJson(_$_GameState instance) =>
     <String, dynamic>{
       'isReady': instance.isReady,
-      'solarSystems': instance.solarSystems,
+      'galaxy': instance.galaxy,
+      'currentSolarSystem': instance.currentSolarSystem,
     };

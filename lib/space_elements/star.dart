@@ -15,7 +15,7 @@ class Star extends GameDecoration with Lighting, ObjectCollision {
               amountPerRow: 4,
             ),
           ),
-          position: data.position,
+          position: Vector2(data.position.x - 128, data.position.y - 128),
           size: Vector2(256, 256),
         ) {
     setupLighting(

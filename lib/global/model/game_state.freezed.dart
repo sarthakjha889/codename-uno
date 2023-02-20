@@ -21,7 +21,8 @@ GameState _$GameStateFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$GameState {
   bool get isReady => throw _privateConstructorUsedError;
-  List<SolarSystemData> get solarSystems => throw _privateConstructorUsedError;
+  GalaxyData get galaxy => throw _privateConstructorUsedError;
+  SolarSystemData? get currentSolarSystem => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +35,11 @@ abstract class $GameStateCopyWith<$Res> {
   factory $GameStateCopyWith(GameState value, $Res Function(GameState) then) =
       _$GameStateCopyWithImpl<$Res, GameState>;
   @useResult
-  $Res call({bool isReady, List<SolarSystemData> solarSystems});
+  $Res call(
+      {bool isReady, GalaxyData galaxy, SolarSystemData? currentSolarSystem});
+
+  $GalaxyDataCopyWith<$Res> get galaxy;
+  $SolarSystemDataCopyWith<$Res>? get currentSolarSystem;
 }
 
 /// @nodoc
@@ -51,18 +56,43 @@ class _$GameStateCopyWithImpl<$Res, $Val extends GameState>
   @override
   $Res call({
     Object? isReady = null,
-    Object? solarSystems = null,
+    Object? galaxy = null,
+    Object? currentSolarSystem = freezed,
   }) {
     return _then(_value.copyWith(
       isReady: null == isReady
           ? _value.isReady
           : isReady // ignore: cast_nullable_to_non_nullable
               as bool,
-      solarSystems: null == solarSystems
-          ? _value.solarSystems
-          : solarSystems // ignore: cast_nullable_to_non_nullable
-              as List<SolarSystemData>,
+      galaxy: null == galaxy
+          ? _value.galaxy
+          : galaxy // ignore: cast_nullable_to_non_nullable
+              as GalaxyData,
+      currentSolarSystem: freezed == currentSolarSystem
+          ? _value.currentSolarSystem
+          : currentSolarSystem // ignore: cast_nullable_to_non_nullable
+              as SolarSystemData?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GalaxyDataCopyWith<$Res> get galaxy {
+    return $GalaxyDataCopyWith<$Res>(_value.galaxy, (value) {
+      return _then(_value.copyWith(galaxy: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SolarSystemDataCopyWith<$Res>? get currentSolarSystem {
+    if (_value.currentSolarSystem == null) {
+      return null;
+    }
+
+    return $SolarSystemDataCopyWith<$Res>(_value.currentSolarSystem!, (value) {
+      return _then(_value.copyWith(currentSolarSystem: value) as $Val);
+    });
   }
 }
 
@@ -73,7 +103,13 @@ abstract class _$$_GameStateCopyWith<$Res> implements $GameStateCopyWith<$Res> {
       __$$_GameStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isReady, List<SolarSystemData> solarSystems});
+  $Res call(
+      {bool isReady, GalaxyData galaxy, SolarSystemData? currentSolarSystem});
+
+  @override
+  $GalaxyDataCopyWith<$Res> get galaxy;
+  @override
+  $SolarSystemDataCopyWith<$Res>? get currentSolarSystem;
 }
 
 /// @nodoc
@@ -88,17 +124,22 @@ class __$$_GameStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isReady = null,
-    Object? solarSystems = null,
+    Object? galaxy = null,
+    Object? currentSolarSystem = freezed,
   }) {
     return _then(_$_GameState(
       isReady: null == isReady
           ? _value.isReady
           : isReady // ignore: cast_nullable_to_non_nullable
               as bool,
-      solarSystems: null == solarSystems
-          ? _value._solarSystems
-          : solarSystems // ignore: cast_nullable_to_non_nullable
-              as List<SolarSystemData>,
+      galaxy: null == galaxy
+          ? _value.galaxy
+          : galaxy // ignore: cast_nullable_to_non_nullable
+              as GalaxyData,
+      currentSolarSystem: freezed == currentSolarSystem
+          ? _value.currentSolarSystem
+          : currentSolarSystem // ignore: cast_nullable_to_non_nullable
+              as SolarSystemData?,
     ));
   }
 }
@@ -107,9 +148,7 @@ class __$$_GameStateCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_GameState implements _GameState {
   const _$_GameState(
-      {this.isReady = true,
-      final List<SolarSystemData> solarSystems = const []})
-      : _solarSystems = solarSystems;
+      {this.isReady = true, required this.galaxy, this.currentSolarSystem});
 
   factory _$_GameState.fromJson(Map<String, dynamic> json) =>
       _$$_GameStateFromJson(json);
@@ -117,18 +156,14 @@ class _$_GameState implements _GameState {
   @override
   @JsonKey()
   final bool isReady;
-  final List<SolarSystemData> _solarSystems;
   @override
-  @JsonKey()
-  List<SolarSystemData> get solarSystems {
-    if (_solarSystems is EqualUnmodifiableListView) return _solarSystems;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_solarSystems);
-  }
+  final GalaxyData galaxy;
+  @override
+  final SolarSystemData? currentSolarSystem;
 
   @override
   String toString() {
-    return 'GameState(isReady: $isReady, solarSystems: $solarSystems)';
+    return 'GameState(isReady: $isReady, galaxy: $galaxy, currentSolarSystem: $currentSolarSystem)';
   }
 
   @override
@@ -137,14 +172,15 @@ class _$_GameState implements _GameState {
         (other.runtimeType == runtimeType &&
             other is _$_GameState &&
             (identical(other.isReady, isReady) || other.isReady == isReady) &&
-            const DeepCollectionEquality()
-                .equals(other._solarSystems, _solarSystems));
+            (identical(other.galaxy, galaxy) || other.galaxy == galaxy) &&
+            (identical(other.currentSolarSystem, currentSolarSystem) ||
+                other.currentSolarSystem == currentSolarSystem));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, isReady, const DeepCollectionEquality().hash(_solarSystems));
+  int get hashCode =>
+      Object.hash(runtimeType, isReady, galaxy, currentSolarSystem);
 
   @JsonKey(ignore: true)
   @override
@@ -163,7 +199,8 @@ class _$_GameState implements _GameState {
 abstract class _GameState implements GameState {
   const factory _GameState(
       {final bool isReady,
-      final List<SolarSystemData> solarSystems}) = _$_GameState;
+      required final GalaxyData galaxy,
+      final SolarSystemData? currentSolarSystem}) = _$_GameState;
 
   factory _GameState.fromJson(Map<String, dynamic> json) =
       _$_GameState.fromJson;
@@ -171,7 +208,9 @@ abstract class _GameState implements GameState {
   @override
   bool get isReady;
   @override
-  List<SolarSystemData> get solarSystems;
+  GalaxyData get galaxy;
+  @override
+  SolarSystemData? get currentSolarSystem;
   @override
   @JsonKey(ignore: true)
   _$$_GameStateCopyWith<_$_GameState> get copyWith =>
