@@ -7,6 +7,7 @@ import 'package:game_test_bonfire/global/objects/decor/outdoor/bush.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/flower.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/grass.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/tree.dart';
+import 'package:game_test_bonfire/global/objects/map_boundary_tile.dart';
 
 class Alfred {
   static Random random = Random();
@@ -40,6 +41,20 @@ class Alfred {
       (mapSize / 2 * tileSize),
       (mapSize / 2 * tileSize),
     );
+  }
+
+  static List<GameDecoration> getMapBoundaries() {
+    List<GameDecoration> mapBoundary = [];
+    for (double i = 0; i < 25; i++) {
+      mapBoundary.add(MapBoundaryTile(Vector2(0, i * Alfred.tileSize)));
+      mapBoundary.add(MapBoundaryTile(Vector2(i * Alfred.tileSize, 0)));
+      mapBoundary.add(MapBoundaryTile(Vector2(i * Alfred.tileSize,
+          ((Alfred.mapSize - 1) * Alfred.tileSize).toDouble())));
+      mapBoundary.add(MapBoundaryTile(Vector2(
+          ((Alfred.mapSize - 1) * Alfred.tileSize).toDouble(),
+          i * Alfred.tileSize)));
+    }
+    return mapBoundary;
   }
 
   static int getRandomNumber({int? min, int? max}) {

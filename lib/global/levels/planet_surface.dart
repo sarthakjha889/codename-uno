@@ -10,7 +10,6 @@ import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/levels/galaxy_map.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
-import 'package:game_test_bonfire/global/objects/weather/rain.dart';
 import 'package:game_test_bonfire/main.dart';
 
 class PlanetSurface extends StatefulWidget {
@@ -41,7 +40,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
         } else {
           player.toggleLighting(false);
         }
-
         return BonfireWidget(
           lightingColorGame: snap.dayTimeType == DayTimeType.night
               ? Colors.black.withOpacity(1)
@@ -59,15 +57,15 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => GalaxyMap(),
+                        builder: (context) => const GalaxyMap(),
                       ),
                     );
                   },
-                  child: Text('Open map'),
+                  child: const Text('Open map'),
                 ),
           },
-          decorations: [],
-          initialActiveOverlays: [
+          decorations: Alfred.getMapBoundaries(),
+          initialActiveOverlays: const [
             'miniMap',
             'mapView',
           ],
@@ -76,7 +74,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           ),
           player: player,
           cameraConfig: CameraConfig(
-            moveOnlyMapArea: true,
+            // moveOnlyMapArea: true,
             angle: 45 * pi / 180,
             target: player,
             sizeMovementWindow: Vector2(50, 50),
@@ -84,7 +82,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           ),
           gameController: gameController,
           map: MatrixMapGenerator.generate(
-            axisInverted: true,
             matrix: Alfred.generateNoiseMap(
               size: Alfred.mapSize,
               frequency: 0.08,
