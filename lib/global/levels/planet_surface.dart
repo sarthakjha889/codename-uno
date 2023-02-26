@@ -22,9 +22,10 @@ class PlanetSurface extends StatefulWidget {
 class _PlanetSurfaceState extends State<PlanetSurface> {
   @override
   void initState() {
+    BonfireInjector().put((i) => p.PlayerController());
+
     super.initState();
-    gameStateController.setRandomDayTime();
-    gameStateController.setRandomWeather();
+    gameStateController.handlePlanetSurfaceStart();
   }
 
   @override
@@ -34,16 +35,13 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
 
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
-      builder: (context, snap) {
-        if (snap.dayTimeType == DayTimeType.night) {
-          player.toggleLighting(true);
-        } else {
-          player.toggleLighting(false);
-        }
+      builder: (context, state) {
         return BonfireWidget(
-          lightingColorGame: snap.dayTimeType == DayTimeType.night
-              ? Colors.black.withOpacity(1)
-              : Colors.transparent,
+          lightingColorGame: state.dayTimeType == DayTimeType.night
+              ? Colors.blueGrey[900]
+              : state.dayTimeType == DayTimeType.evening
+                  ? Colors.blueGrey[900]!.withOpacity(0.8)
+                  : Colors.transparent,
           overlayBuilderMap: {
             'miniMap': (context, game) => MiniMap(
                   game: game,
@@ -64,7 +62,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                   child: const Text('Open map'),
                 ),
           },
-          decorations: Alfred.getMapBoundaries(),
+          decorations: Alfred.getForestDecorations(),
           initialActiveOverlays: const [
             'miniMap',
             'mapView',
@@ -74,7 +72,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           ),
           player: player,
           cameraConfig: CameraConfig(
-            // moveOnlyMapArea: true,
+            moveOnlyMapArea: true,
             angle: 45 * pi / 180,
             target: player,
             sizeMovementWindow: Vector2(50, 50),
@@ -98,10 +96,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
               } else if (prop.value >= 0.1 && prop.value < 0.23) {
                 sprite = TileModelSprite(
                   path: 'terrain/tiles/Grass_darked.png',
-                );
-              } else if (prop.value >= 0.23) {
-                sprite = TileModelSprite(
-                  path: 'terrain/tiles/water.png',
                 );
               } else if (prop.value <= 0 && prop.value > -0.1) {
                 sprite = TileModelSprite(

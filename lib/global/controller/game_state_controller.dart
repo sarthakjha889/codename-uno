@@ -1,9 +1,4 @@
-// import 'package:bonfire/bonfire.dart';
-
-import 'dart:ui';
-
 import 'package:bonfire/bonfire.dart';
-import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/galaxy_data.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
@@ -28,6 +23,11 @@ class GameStateController extends Cubit<GameState> {
 
   SolarSystemUseCase solarSystemUseCase = SolarSystemUseCase();
   Uuid uuid = const Uuid();
+
+  void handlePlanetSurfaceStart() {
+    setRandomWeather();
+    setRandomDayTime();
+  }
 
   void setRandomWeather() {
     emit(
@@ -95,6 +95,7 @@ class GameStateController extends Cubit<GameState> {
           revolutionSpeed: Alfred.getRandomNumber(min: 1, max: 2) /
               Alfred.getRandomNumber(min: 10, max: 20),
           type: base,
+          dayDurationInSeconds: Alfred.getRandomNumber(min: 10, max: 11),
           solidVariant: solidPlanetVariant,
           gasVariant: gasPlanetVariant,
           spritesheetPath: solarSystemUseCase.getPlanetSpritesheet(
@@ -117,5 +118,9 @@ class GameStateController extends Cubit<GameState> {
       star: star,
       planets: planets,
     );
+  }
+
+  void setCurrentPlanet(PlanetData planet) {
+    emit(state.copyWith(currentPlanet: planet));
   }
 }

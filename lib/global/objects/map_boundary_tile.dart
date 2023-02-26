@@ -5,7 +5,10 @@ class MapBoundaryTile extends GameDecoration with ObjectCollision {
   MapBoundaryTile(Vector2 tilePosition)
       : super(
           position: tilePosition,
-          size: Vector2(Alfred.tileSize.toDouble(), Alfred.tileSize.toDouble()),
+          size: Vector2(
+            Alfred.tileSize.toDouble(),
+            Alfred.tileSize.toDouble(),
+          ),
         ) {
     position = tilePosition;
     setupCollision(
@@ -13,8 +16,10 @@ class MapBoundaryTile extends GameDecoration with ObjectCollision {
         enable: true,
         collisions: [
           CollisionArea.rectangle(
-            size:
-                Vector2(Alfred.tileSize.toDouble(), Alfred.tileSize.toDouble()),
+            size: Vector2(
+              Alfred.tileSize.toDouble(),
+              Alfred.tileSize.toDouble(),
+            ),
           ),
         ],
       ),

@@ -35,15 +35,15 @@ class LevelMap extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => GalaxyMap(),
+                    builder: (context) => const GalaxyMap(),
                   ),
                 );
               },
-              child: Text('Open map'),
+              child: const Text('Open map'),
             ),
       },
       decorations: system.getDecorations(),
-      initialActiveOverlays: [
+      initialActiveOverlays: const [
         'miniMap',
         'mapView',
       ],

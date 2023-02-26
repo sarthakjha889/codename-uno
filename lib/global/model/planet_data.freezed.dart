@@ -29,6 +29,7 @@ mixin _$PlanetData {
   double get starDistance => throw _privateConstructorUsedError;
   double get revolutionSpeed => throw _privateConstructorUsedError;
   PlanetBase get type => throw _privateConstructorUsedError;
+  int get dayDurationInSeconds => throw _privateConstructorUsedError;
   SolidPlanetVariant? get solidVariant => throw _privateConstructorUsedError;
   GasPlanetVariant? get gasVariant => throw _privateConstructorUsedError;
 
@@ -52,6 +53,7 @@ abstract class $PlanetDataCopyWith<$Res> {
       double starDistance,
       double revolutionSpeed,
       PlanetBase type,
+      int dayDurationInSeconds,
       SolidPlanetVariant? solidVariant,
       GasPlanetVariant? gasVariant});
 }
@@ -76,6 +78,7 @@ class _$PlanetDataCopyWithImpl<$Res, $Val extends PlanetData>
     Object? starDistance = null,
     Object? revolutionSpeed = null,
     Object? type = null,
+    Object? dayDurationInSeconds = null,
     Object? solidVariant = freezed,
     Object? gasVariant = freezed,
   }) {
@@ -108,6 +111,10 @@ class _$PlanetDataCopyWithImpl<$Res, $Val extends PlanetData>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PlanetBase,
+      dayDurationInSeconds: null == dayDurationInSeconds
+          ? _value.dayDurationInSeconds
+          : dayDurationInSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
       solidVariant: freezed == solidVariant
           ? _value.solidVariant
           : solidVariant // ignore: cast_nullable_to_non_nullable
@@ -136,6 +143,7 @@ abstract class _$$_PlanetDataCopyWith<$Res>
       double starDistance,
       double revolutionSpeed,
       PlanetBase type,
+      int dayDurationInSeconds,
       SolidPlanetVariant? solidVariant,
       GasPlanetVariant? gasVariant});
 }
@@ -158,6 +166,7 @@ class __$$_PlanetDataCopyWithImpl<$Res>
     Object? starDistance = null,
     Object? revolutionSpeed = null,
     Object? type = null,
+    Object? dayDurationInSeconds = null,
     Object? solidVariant = freezed,
     Object? gasVariant = freezed,
   }) {
@@ -190,6 +199,10 @@ class __$$_PlanetDataCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as PlanetBase,
+      dayDurationInSeconds: null == dayDurationInSeconds
+          ? _value.dayDurationInSeconds
+          : dayDurationInSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
       solidVariant: freezed == solidVariant
           ? _value.solidVariant
           : solidVariant // ignore: cast_nullable_to_non_nullable
@@ -213,6 +226,7 @@ class _$_PlanetData extends _PlanetData {
       required this.starDistance,
       required this.revolutionSpeed,
       required this.type,
+      this.dayDurationInSeconds = 30,
       this.solidVariant,
       this.gasVariant})
       : assert(solidVariant != null || gasVariant != null),
@@ -238,13 +252,16 @@ class _$_PlanetData extends _PlanetData {
   @override
   final PlanetBase type;
   @override
+  @JsonKey()
+  final int dayDurationInSeconds;
+  @override
   final SolidPlanetVariant? solidVariant;
   @override
   final GasPlanetVariant? gasVariant;
 
   @override
   String toString() {
-    return 'PlanetData(planetSize: $planetSize, starPosition: $starPosition, name: $name, spritesheetPath: $spritesheetPath, starDistance: $starDistance, revolutionSpeed: $revolutionSpeed, type: $type, solidVariant: $solidVariant, gasVariant: $gasVariant)';
+    return 'PlanetData(planetSize: $planetSize, starPosition: $starPosition, name: $name, spritesheetPath: $spritesheetPath, starDistance: $starDistance, revolutionSpeed: $revolutionSpeed, type: $type, dayDurationInSeconds: $dayDurationInSeconds, solidVariant: $solidVariant, gasVariant: $gasVariant)';
   }
 
   @override
@@ -264,6 +281,8 @@ class _$_PlanetData extends _PlanetData {
             (identical(other.revolutionSpeed, revolutionSpeed) ||
                 other.revolutionSpeed == revolutionSpeed) &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.dayDurationInSeconds, dayDurationInSeconds) ||
+                other.dayDurationInSeconds == dayDurationInSeconds) &&
             (identical(other.solidVariant, solidVariant) ||
                 other.solidVariant == solidVariant) &&
             (identical(other.gasVariant, gasVariant) ||
@@ -281,6 +300,7 @@ class _$_PlanetData extends _PlanetData {
       starDistance,
       revolutionSpeed,
       type,
+      dayDurationInSeconds,
       solidVariant,
       gasVariant);
 
@@ -307,6 +327,7 @@ abstract class _PlanetData extends PlanetData {
       required final double starDistance,
       required final double revolutionSpeed,
       required final PlanetBase type,
+      final int dayDurationInSeconds,
       final SolidPlanetVariant? solidVariant,
       final GasPlanetVariant? gasVariant}) = _$_PlanetData;
   const _PlanetData._() : super._();
@@ -330,6 +351,8 @@ abstract class _PlanetData extends PlanetData {
   double get revolutionSpeed;
   @override
   PlanetBase get type;
+  @override
+  int get dayDurationInSeconds;
   @override
   SolidPlanetVariant? get solidVariant;
   @override

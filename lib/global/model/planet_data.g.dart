@@ -15,6 +15,7 @@ Map<String, dynamic> _$PlanetDataToJson(PlanetData instance) =>
       'starDistance': instance.starDistance,
       'revolutionSpeed': instance.revolutionSpeed,
       'type': _$PlanetBaseEnumMap[instance.type]!,
+      'dayDurationInSeconds': instance.dayDurationInSeconds,
       'solidVariant': _$SolidPlanetVariantEnumMap[instance.solidVariant],
       'gasVariant': _$GasPlanetVariantEnumMap[instance.gasVariant],
     };
@@ -66,6 +67,7 @@ _$_PlanetData _$$_PlanetDataFromJson(Map<String, dynamic> json) =>
       starDistance: (json['starDistance'] as num).toDouble(),
       revolutionSpeed: (json['revolutionSpeed'] as num).toDouble(),
       type: $enumDecode(_$PlanetBaseEnumMap, json['type']),
+      dayDurationInSeconds: json['dayDurationInSeconds'] as int? ?? 30,
       solidVariant: $enumDecodeNullable(
           _$SolidPlanetVariantEnumMap, json['solidVariant']),
       gasVariant:
@@ -81,6 +83,7 @@ Map<String, dynamic> _$$_PlanetDataToJson(_$_PlanetData instance) =>
       'starDistance': instance.starDistance,
       'revolutionSpeed': instance.revolutionSpeed,
       'type': _$PlanetBaseEnumMap[instance.type]!,
+      'dayDurationInSeconds': instance.dayDurationInSeconds,
       'solidVariant': _$SolidPlanetVariantEnumMap[instance.solidVariant],
       'gasVariant': _$GasPlanetVariantEnumMap[instance.gasVariant],
     };

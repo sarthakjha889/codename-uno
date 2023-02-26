@@ -1,5 +1,6 @@
 // This file is "main.dart"
 import 'package:bonfire/bonfire.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:game_test_bonfire/global/serialisers/vector2_serialiser.dart';
 
@@ -7,34 +8,44 @@ part 'planet_data.freezed.dart';
 part 'planet_data.g.dart';
 
 enum SolidPlanetVariant {
-  airless,
-  aquamarine,
-  arid,
-  barren,
-  cloudy,
-  cratered,
-  dry,
-  frozen,
-  glacial,
-  icy,
-  lunar,
-  lush,
-  magma,
-  muddy,
-  oasis,
-  ocean,
-  rocky,
-  snowy,
-  terrestrial,
-  tropical,
+  airless(fogColor: Colors.grey),
+  aquamarine(fogColor: Colors.blue),
+  arid(fogColor: Colors.grey),
+  barren(fogColor: Colors.brown),
+  cloudy(fogColor: Colors.blueGrey),
+  cratered(fogColor: Colors.blueGrey),
+  dry(fogColor: Colors.brown),
+  frozen(fogColor: Colors.lightBlue),
+  glacial(fogColor: Colors.lightBlue),
+  icy(fogColor: Colors.lightBlue),
+  lunar(fogColor: Colors.grey),
+  lush(fogColor: Colors.green),
+  magma(fogColor: Colors.orange),
+  muddy(fogColor: Colors.brown),
+  oasis(fogColor: Colors.green),
+  ocean(fogColor: Colors.blue),
+  rocky(fogColor: Colors.grey),
+  snowy(fogColor: Colors.blue),
+  terrestrial(fogColor: Colors.green),
+  tropical(fogColor: Colors.green);
+
+  final Color fogColor;
+  const SolidPlanetVariant({
+    required this.fogColor,
+  });
 }
 
 enum GasPlanetVariant {
-  blue,
-  green,
-  orange,
-  red,
-  yellow,
+  blue(fogColor: Colors.blue),
+  green(fogColor: Colors.green),
+  orange(fogColor: Colors.orange),
+  red(fogColor: Colors.red),
+  yellow(fogColor: Colors.yellow);
+
+  final Color fogColor;
+  const GasPlanetVariant({
+    required this.fogColor,
+  });
 }
 
 enum PlanetBase {
@@ -55,6 +66,7 @@ class PlanetData with _$PlanetData {
     required double starDistance,
     required double revolutionSpeed,
     required PlanetBase type,
+    @Default(30) int dayDurationInSeconds,
     SolidPlanetVariant? solidVariant,
     GasPlanetVariant? gasVariant,
   }) = _PlanetData;

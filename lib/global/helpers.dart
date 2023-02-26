@@ -93,10 +93,10 @@ class Alfred {
     );
   }
 
-  static List<GameDecoration> getForestDecorations({required int mapSize}) {
-    List<GameDecoration> list = [];
+  static List<GameDecoration> getForestDecorations() {
+    List<GameDecoration> list = [...getMapBoundaries()];
     List<List<double>> noiseMap = generateNoiseMap(
-      size: mapSize,
+      size: Alfred.mapSize,
       frequency: 0.5,
     );
 
@@ -108,8 +108,8 @@ class Alfred {
               list.add(
                 BushDecoration(
                   Vector2(
-                    noiseMap.indexOf(i) * 64,
-                    (64 * i.indexOf(j)).toDouble(),
+                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
                   ),
                 ),
               );
@@ -119,8 +119,8 @@ class Alfred {
                 list.add(
                   TreeDecoration(
                     Vector2(
-                      noiseMap.indexOf(i) * 64,
-                      (64 * i.indexOf(j)).toDouble(),
+                      (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                      (Alfred.tileSize * i.indexOf(j)).toDouble(),
                     ),
                   ),
                 );
@@ -130,8 +130,8 @@ class Alfred {
               list.add(
                 FlowerDecoration(
                   Vector2(
-                    noiseMap.indexOf(i) * 64,
-                    (64 * i.indexOf(j)).toDouble(),
+                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
                   ),
                 ),
               );
@@ -140,8 +140,8 @@ class Alfred {
               list.add(
                 GrassDecoration(
                   Vector2(
-                    noiseMap.indexOf(i) * 64,
-                    (64 * i.indexOf(j)).toDouble(),
+                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
                   ),
                 ),
               );
