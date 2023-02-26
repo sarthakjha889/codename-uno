@@ -2,15 +2,38 @@ import 'dart:math';
 
 import 'package:bonfire/bonfire.dart';
 import 'package:fast_noise/fast_noise.dart';
-import 'package:game_test_bonfire/objects/decor/outdoor/bush.dart';
-import 'package:game_test_bonfire/objects/decor/outdoor/flower.dart';
-import 'package:game_test_bonfire/objects/decor/outdoor/grass.dart';
-import 'package:game_test_bonfire/objects/decor/outdoor/tree.dart';
+import 'package:flutter/material.dart';
+import 'package:game_test_bonfire/global/objects/decor/outdoor/bush.dart';
+import 'package:game_test_bonfire/global/objects/decor/outdoor/flower.dart';
+import 'package:game_test_bonfire/global/objects/decor/outdoor/grass.dart';
+import 'package:game_test_bonfire/global/objects/decor/outdoor/tree.dart';
 
 class Alfred {
   static Random random = Random();
   static int mapSize = 25;
   static int tileSize = 256;
+
+  static pushNewLevel({
+    required BuildContext context,
+    required dynamic destination,
+  }) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => destination,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return Container(
+            color: Colors.black,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+      ),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   static Vector2 getMapCenter() {
     return Vector2(

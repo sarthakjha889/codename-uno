@@ -1,6 +1,6 @@
 import 'package:bonfire/bonfire.dart';
 
-class PlayerSpriteSheet {
+class PlayerSpaceShipSpriteSheet {
   static Future<SpriteAnimation> get idleRight => SpriteAnimation.load(
         "player/ship.png",
         SpriteAnimationData.sequenced(
@@ -26,12 +26,12 @@ class PlayerSpriteSheet {
       );
 }
 
-class Knight extends SimplePlayer with ObjectCollision {
-  Knight(Vector2 position)
+class PlayerSpaceShip extends SimplePlayer with ObjectCollision {
+  PlayerSpaceShip(Vector2 position)
       : super(
           position: position,
           size: Vector2(64, 64),
-          animation: PlayerSpriteSheet.simpleDirectionAnimation,
+          animation: PlayerSpaceShipSpriteSheet.simpleDirectionAnimation,
           speed: 1000,
         ) {
     setupCollision(

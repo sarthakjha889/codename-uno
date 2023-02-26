@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
+import 'package:game_test_bonfire/global/characters/player_space_ship.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
+import 'package:game_test_bonfire/global/levels/planet_surface.dart';
 import 'package:game_test_bonfire/global/model/planet_data.dart';
 
 class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
@@ -52,6 +54,24 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
       mapCenter.x + data.starDistance * cos(orbitAngle),
       mapCenter.y + data.starDistance * sin(orbitAngle),
     );
+  }
+
+  @override
+  bool onCollision(GameComponent component, bool active) {
+    if (component is PlayerSpaceShip) {
+      Alfred.pushNewLevel(
+        context: context,
+        destination: PlanetSurface(),
+      );
+      print('Player collided!');
+      // Do anything you want
+    }
+
+    // active = true : this component enter in collision with param component
+    // active = false : param component enter in collision with this
+
+    // if return `false` so the object will not collide with anything or block the passage
+    return super.onCollision(component, active);
   }
 
   @override

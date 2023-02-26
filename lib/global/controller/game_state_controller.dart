@@ -29,6 +29,22 @@ class GameStateController extends Cubit<GameState> {
   SolarSystemUseCase solarSystemUseCase = SolarSystemUseCase();
   Uuid uuid = const Uuid();
 
+  void setRandomWeather() {
+    emit(
+      state.copyWith(
+        weatherType: Alfred.getRandomValueFromList(WeatherType.values),
+      ),
+    );
+  }
+
+  void setRandomDayTime() {
+    emit(
+      state.copyWith(
+        dayTimeType: Alfred.getRandomValueFromList(DayTimeType.values),
+      ),
+    );
+  }
+
   void changeCurrentSolarSystem(SolarSystemData e) {
     emit(state.copyWith(currentSolarSystem: e));
   }
