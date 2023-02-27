@@ -1,4 +1,5 @@
 import 'package:bonfire/bonfire.dart';
+import 'package:game_test_bonfire/global/constants.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/galaxy_data.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';

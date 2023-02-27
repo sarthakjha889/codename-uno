@@ -87,3 +87,39 @@ List<String> planetBaseNames = [
   'Galaxia Prime',
   'Heliosia',
 ];
+
+enum SolidPlanetVariant {
+  airless,
+  aquamarine,
+  arid,
+  barren,
+  cloudy,
+  cratered,
+  dry,
+  frozen,
+  glacial,
+  icy,
+  lunar,
+  lush,
+  magma,
+  muddy,
+  oasis,
+  ocean,
+  rocky,
+  snowy,
+  terrestrial,
+  tropical,
+}
+
+enum GasPlanetVariant {
+  blue,
+  green,
+  orange,
+  red,
+  yellow,
+}
+
+enum PlanetBase {
+  solid,
+  gaseous,
+}

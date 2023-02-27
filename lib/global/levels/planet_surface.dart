@@ -40,7 +40,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           lightingColorGame: state.dayTimeType == DayTimeType.night
               ? Colors.blueGrey[900]
               : state.dayTimeType == DayTimeType.evening
-                  ? Colors.blueGrey[900]!.withOpacity(0.8)
+                  ? Colors.black.withOpacity(0.8)
                   : Colors.transparent,
           overlayBuilderMap: {
             'miniMap': (context, game) => MiniMap(

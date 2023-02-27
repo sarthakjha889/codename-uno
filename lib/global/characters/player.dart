@@ -87,11 +87,7 @@ class Player extends SimplePlayer
       setupLighting(
         LightingConfig(
           radius: Alfred.tileSize * nightVisionMultiplier,
-          color: gameStateController.state.currentPlanet?.gasVariant?.fogColor
-                  .withOpacity(0.1) ??
-              gameStateController.state.currentPlanet?.gasVariant?.fogColor
-                  .withOpacity(0.1) ??
-              Colors.blueGrey[900]!.withOpacity(0.1),
+          color: Colors.black.withOpacity(0.1),
           blurBorder: nightVisionMultiplier * Alfred.tileSize,
         ),
       );
@@ -170,11 +166,7 @@ class PlayerController extends StateController<Player> {
         case DayTimeType.day:
           player.toggleLighting(true);
           gameRef.lighting?.animateToColor(
-            gameStateController.state.currentPlanet?.gasVariant?.fogColor
-                    .withOpacity(0.8) ??
-                gameStateController.state.currentPlanet?.gasVariant?.fogColor
-                    .withOpacity(0.8) ??
-                Colors.blueGrey[900]!.withOpacity(0.8),
+            Colors.black.withOpacity(0.8),
             curve: Curves.fastLinearToSlowEaseIn,
             duration: const Duration(seconds: 3),
           );
@@ -187,9 +179,7 @@ class PlayerController extends StateController<Player> {
         case DayTimeType.evening:
           player.toggleLighting(true);
           gameRef.lighting?.animateToColor(
-            gameStateController.state.currentPlanet?.gasVariant?.fogColor ??
-                gameStateController.state.currentPlanet?.gasVariant?.fogColor ??
-                Colors.blueGrey[900]!,
+            Colors.black,
             curve: Curves.fastLinearToSlowEaseIn,
             duration: const Duration(seconds: 3),
           );

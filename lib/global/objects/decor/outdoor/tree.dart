@@ -5,8 +5,15 @@ import 'package:game_test_bonfire/global/helpers.dart';
 class TreeDecoration extends GameDecoration with ObjectCollision {
   static const double multiplier = 1.25;
   TreeDecoration(Vector2 position)
-      : super.withSprite(
-          sprite: Sprite.load(getAsset()),
+      : super.withAnimation(
+          animation: SpriteAnimation.load(
+            getAsset(),
+            SpriteAnimationData.sequenced(
+              amount: 3,
+              stepTime: 0.2,
+              textureSize: Vector2(388, 430),
+            ),
+          ),
           position: position,
           size: Vector2(
             (Alfred.tileSize * multiplier).toDouble(),
@@ -32,8 +39,11 @@ class TreeDecoration extends GameDecoration with ObjectCollision {
     );
   }
 
+  @override
+  int get priority => LayerPriority.MAP + 2;
+
   static String getAsset() {
-    return 'terrain/sprites/Tree_${Alfred.getRandomNumber(min: 1, max: 2).toInt()} - ${Alfred.getRandomNumber(min: 1, max: 4).toInt()}.png';
+    return 'terrain/sprites/tree_${Alfred.getRandomNumber(min: 1, max: 2).toInt()}_sprite.png';
   }
 
   @override

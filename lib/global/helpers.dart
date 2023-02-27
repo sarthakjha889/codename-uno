@@ -89,7 +89,7 @@ class Alfred {
       frequency: frequency,
       gain: gain ?? 0.5,
       noiseType: noiseType ?? NoiseType.PerlinFractal,
-      cellularDistanceFunction: df ?? CellularDistanceFunction.Manhattan,
+      cellularDistanceFunction: df ?? CellularDistanceFunction.Natural,
     );
   }
 
@@ -98,56 +98,54 @@ class Alfred {
     List<List<double>> noiseMap = generateNoiseMap(
       size: Alfred.mapSize,
       frequency: 0.5,
+      gain: 0.5,
+      df: CellularDistanceFunction.Euclidean,
     );
 
+    double noiseMax =
+        noiseMap.reduce((value, element) => [...value, ...element]).reduce(max);
+    double noiseMin =
+        noiseMap.reduce((value, element) => [...value, ...element]).reduce(min);
+    final int randomInt = Alfred.random.nextInt(100);
     for (List<double> i in noiseMap) {
       for (double j in i) {
-        if (j != 0) {
-          switch (getRandomNumber(min: 1, max: 4).toInt()) {
-            case 1:
-              list.add(
-                BushDecoration(
-                  Vector2(
-                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
-                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
-                  ),
-                ),
-              );
-              break;
-            case 2:
-              if (i.indexOf(j) < mapSize - 1) {
-                list.add(
-                  TreeDecoration(
-                    Vector2(
-                      (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
-                      (Alfred.tileSize * i.indexOf(j)).toDouble(),
-                    ),
-                  ),
-                );
-              }
-              break;
-            case 3:
-              list.add(
-                FlowerDecoration(
-                  Vector2(
-                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
-                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
-                  ),
-                ),
-              );
-              break;
-            case 4:
-              list.add(
-                GrassDecoration(
-                  Vector2(
-                    (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
-                    (Alfred.tileSize * i.indexOf(j)).toDouble(),
-                  ),
-                ),
-              );
-              break;
-            default:
-          }
+        final double normalizedValue = (j - noiseMin) / (noiseMax - noiseMin);
+        if (normalizedValue > 0.7 && randomInt < 50) {
+          list.add(
+            TreeDecoration(
+              Vector2(
+                (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                (Alfred.tileSize * i.indexOf(j)).toDouble(),
+              ),
+            ),
+          );
+        } else if (normalizedValue > 0.6 && randomInt < 70) {
+          list.add(
+            BushDecoration(
+              Vector2(
+                (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                (Alfred.tileSize * i.indexOf(j)).toDouble(),
+              ),
+            ),
+          );
+        } else if (normalizedValue > 0.5 && randomInt < 90) {
+          list.add(
+            FlowerDecoration(
+              Vector2(
+                (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                (Alfred.tileSize * i.indexOf(j)).toDouble(),
+              ),
+            ),
+          );
+        } else if (normalizedValue > 0.4 && randomInt < 100) {
+          list.add(
+            GrassDecoration(
+              Vector2(
+                (noiseMap.indexOf(i) * Alfred.tileSize).toDouble(),
+                (Alfred.tileSize * i.indexOf(j)).toDouble(),
+              ),
+            ),
+          );
         }
       }
     }
