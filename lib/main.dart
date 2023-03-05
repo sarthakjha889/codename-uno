@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
@@ -51,10 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: CircularProgressIndicator(),
           );
         } else {
-          // return PlanetSurface();
-          SolarSystem system =
-              SolarSystem(solarSystemData: state.currentSolarSystem!);
-          return LevelMap(system: system);
+          return PlanetSurface();
+          // SolarSystem system =
+          //     SolarSystem(solarSystemData: state.currentSolarSystem!);
+          // return LevelMap(system: system);
         }
       },
     );

@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'dart:async' as asy;
+import 'package:collection/collection.dart';
 
 import 'package:game_test_bonfire/main.dart';
 
@@ -40,6 +43,61 @@ class PlayerSpriteSheet {
           amount: 6,
           stepTime: 0.1,
           textureSize: Vector2(16, 16),
+        ),
+      );
+
+  static Future<SpriteAnimation> get whiteAttackEffectRight =>
+      SpriteAnimation.load(
+        "player/atack_effect_bottom.png",
+        SpriteAnimationData.sequenced(
+          amount: 6,
+          stepTime: 0.1,
+          textureSize: Vector2(16, 16),
+        ),
+      );
+
+  static Future<SpriteAnimation> get fireBallRight => SpriteAnimation.load(
+        "player/fireball_right.png",
+        SpriteAnimationData.sequenced(
+          amount: 3,
+          stepTime: 0.1,
+          textureSize: Vector2(23, 23),
+        ),
+      );
+
+  static Future<SpriteAnimation> get fireBallLeft => SpriteAnimation.load(
+        "player/fireball_left.png",
+        SpriteAnimationData.sequenced(
+          amount: 3,
+          stepTime: 0.1,
+          textureSize: Vector2(23, 23),
+        ),
+      );
+
+  static Future<SpriteAnimation> get fireBallBottom => SpriteAnimation.load(
+        "player/fireball_bottom.png",
+        SpriteAnimationData.sequenced(
+          amount: 3,
+          stepTime: 0.1,
+          textureSize: Vector2(23, 23),
+        ),
+      );
+
+  static Future<SpriteAnimation> get fireBallTop => SpriteAnimation.load(
+        "player/fireball_top.png",
+        SpriteAnimationData.sequenced(
+          amount: 3,
+          stepTime: 0.1,
+          textureSize: Vector2(23, 23),
+        ),
+      );
+
+  static Future<SpriteAnimation> get explosionAnimation => SpriteAnimation.load(
+        "player/explosion_fire.png",
+        SpriteAnimationData.sequenced(
+          amount: 6,
+          stepTime: 0.1,
+          textureSize: Vector2(32, 32),
         ),
       );
 
@@ -100,6 +158,61 @@ class Player extends SimplePlayer
         ),
       );
     }
+  }
+
+  @override
+  void joystickAction(JoystickActionEvent event) {
+    if (hasGameRef && gameRef.sceneBuilderStatus.isRunning) {
+      return;
+    }
+    if (hasController) {
+      if (event.event == ActionEvent.DOWN) {
+        if (event.id == 'attack-range') {
+          execRangeAttack(123);
+        }
+        if (event.id == 'attack-melee') {
+          execMeleeAttack(
+            Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
+          );
+        }
+      }
+    }
+    super.joystickAction(event);
+  }
+
+  void execMeleeAttack(double attack) {
+    simpleAttackMelee(
+      damage: attack,
+      animationRight: PlayerSpriteSheet.whiteAttackEffectRight,
+      size: Vector2.all(128),
+    );
+  }
+
+  void execRangeAttack(double damage) {
+    simpleAttackRangeByAngle(
+      attackFrom: AttackFromEnum.PLAYER_OR_ALLY,
+      animation: PlayerSpriteSheet.fireBallRight,
+      animationDestroy: PlayerSpriteSheet.explosionAnimation,
+      angle: gameRef.livingEnemies().firstOrNull?.getInverseAngleFromPlayer() ??
+          Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
+      size: Vector2.all(width * 0.7),
+      damage: damage,
+      speed: speed * 4,
+      collision: CollisionConfig(
+        collisions: [
+          CollisionArea.rectangle(
+            size: Vector2(width / 3, width / 3),
+            align: Vector2(width * 0.1, 0),
+          ),
+        ],
+      ),
+      marginFromOrigin: 10,
+      lightingConfig: LightingConfig(
+        radius: width / 2,
+        blurBorder: width,
+        color: Colors.orange.withOpacity(0.3),
+      ),
+    );
   }
 
   @override

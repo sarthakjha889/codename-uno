@@ -74,6 +74,45 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/player/
+    - assets/images/enemy/
+    - assets/images/terrain/
+    - assets/images/terrain/tiles/
+    - assets/images/terrain/sprites/
+    - assets/images/misc/
+    - assets/images/planets/
+    - assets/images/planets/Gaseous/
+    - assets/images/planets/Gaseous/Blue Giant/
+    - assets/images/planets/Gaseous/Green Giant/
+    - assets/images/planets/Gaseous/Orange Giant/
+    - assets/images/planets/Gaseous/Red Giant/
+    - assets/images/planets/Gaseous/Yellow Giant/
+    - assets/images/planets/Solid/
+    - assets/images/planets/Solid/Airless/
+    - assets/images/planets/Solid/Aquamarine/
+    - assets/images/planets/Solid/Arid/
+    - assets/images/planets/Solid/Barren/
+    - assets/images/planets/Solid/Cloudy/
+    - assets/images/planets/Solid/Cratered/
+    - assets/images/planets/Solid/Dry/
+    - assets/images/planets/Solid/Frozen/
+    - assets/images/planets/Solid/Glacial/
+    - assets/images/planets/Solid/Icy/
+    - assets/images/planets/Solid/Lunar/
+    - assets/images/planets/Solid/Lush/
+    - assets/images/planets/Solid/Magma/
+    - assets/images/planets/Solid/Muddy/
+    - assets/images/planets/Solid/Oasis/
+    - assets/images/planets/Solid/Ocean/
+    - assets/images/planets/Solid/Rocky/
+    - assets/images/planets/Solid/Snowy/
+    - assets/images/planets/Solid/Terrestrial/
+    - assets/images/planets/Solid/Tropical/
+    - assets/images/planets/Suns/
+    - assets/images/planets/Suns/Blue Sun/
+    - assets/images/planets/Suns/Red Sun/
+    - assets/images/planets/Suns/Yellow Sun/
+    - assets/images/space/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

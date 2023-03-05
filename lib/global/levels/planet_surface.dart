@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_test_bonfire/global/characters/enemy.dart';
 import 'package:game_test_bonfire/global/characters/player.dart' as p;
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
@@ -31,6 +32,9 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
   @override
   Widget build(BuildContext context) {
     p.Player player = p.Player(Alfred.getMapCenter());
+    Enemy enemy = MyEnemy(
+      Vector2.all(Alfred.getMapCenter().x - 200),
+    );
     GameController gameController = GameController();
 
     return BlocBuilder<GameStateController, GameState>(
@@ -69,8 +73,21 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           ],
           joystick: Joystick(
             directional: JoystickDirectional(isFixed: false),
+            actions: [
+              JoystickAction(
+                actionId: 'attack-range',
+                margin: EdgeInsets.all(100),
+                color: Colors.red,
+              ),
+              JoystickAction(
+                actionId: 'attack-melee',
+                margin: EdgeInsets.all(150),
+                color: Colors.yellow,
+              ),
+            ],
           ),
           player: player,
+          enemies: [enemy],
           cameraConfig: CameraConfig(
             moveOnlyMapArea: true,
             angle: 45 * pi / 180,
