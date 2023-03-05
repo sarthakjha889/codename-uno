@@ -1,4 +1,5 @@
 import 'package:bonfire/bonfire.dart';
+import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 
 class EnemySpriteSheet {
@@ -45,7 +46,7 @@ class EnemySpriteSheet {
       );
 }
 
-class MyEnemy extends SimpleEnemy with ObjectCollision {
+class MyEnemy extends SimpleEnemy with ObjectCollision, UseBarLife {
   MyEnemy(Vector2 position)
       : super(
           animation: EnemySpriteSheet.simpleDirectionAnimation,
@@ -63,12 +64,30 @@ class MyEnemy extends SimpleEnemy with ObjectCollision {
         ],
       ),
     );
+    setupBarLife(
+      backgroundColor: Colors.black,
+      barLifePosition: BarLifePorition.bottom,
+      borderRadius: BorderRadius.circular(8),
+      showLifeText: false,
+      colors: [Colors.red, Colors.orange, Colors.green],
+      size: Vector2(size.x / 2, 10),
+      borderColor: Colors.black,
+    );
   }
 
   @override
-  void receiveDamage(AttackFromEnum, double, dynamic) {
+  void receiveDamage(attacker, damage, identify) {
     /// Called when the enemy receive damage
-    super.receiveDamage(AttackFromEnum, double, dynamic);
+    showDamage(
+      damage,
+      onlyUp: true,
+      config: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.red,
+        fontSize: 40,
+      ),
+    );
+    super.receiveDamage(attacker, damage, identify);
   }
 
   @override
@@ -81,16 +100,16 @@ class MyEnemy extends SimpleEnemy with ObjectCollision {
 
   @override
   void update(double dt) {
-    // seeAndMoveToPlayer(
-
-    //   closePlayer: (player) {
-    //     positionsItselfAndKeepDistance(
-    //       gameRef.player!,
-    //       positioned: (p0) {},
-    //     );
-    //   },
-    //   radiusVision: Alfred.tileSize * 10,
+    // positionsItselfAndKeepDistance(
+    //   gameRef.player!,
+    //   positioned: (p0) {},
     // );
+    seeAndMoveToPlayer(
+      closePlayer: (player) {
+        simpleAttackMelee(damage: 0, size: size);
+      },
+      radiusVision: Alfred.tileSize * 15,
+    );
     super.update(dt);
   }
 }

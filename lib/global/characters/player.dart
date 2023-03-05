@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
+import 'package:game_test_bonfire/global/characters/enemy.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'dart:async' as asy;
 import 'package:collection/collection.dart';
 
 import 'package:game_test_bonfire/main.dart';
+import 'package:helpers/helpers.dart';
 
 class PlayerSpriteSheet {
   static Future<SpriteAnimation> get idleLeft => SpriteAnimation.load(
@@ -109,7 +111,11 @@ class PlayerSpriteSheet {
 }
 
 class Player extends SimplePlayer
-    with ObjectCollision, Lighting, UseStateController<PlayerController> {
+    with
+        ObjectCollision,
+        Lighting,
+        UseStateController<PlayerController>,
+        UseBarLife {
   double nightVisionMultiplier = 3;
   int? countDownSeconds;
 
@@ -137,6 +143,15 @@ class Player extends SimplePlayer
           ),
         ],
       ),
+    );
+    setupBarLife(
+      backgroundColor: Colors.black,
+      barLifePosition: BarLifePorition.bottom,
+      borderRadius: BorderRadius.circular(8),
+      showLifeText: false,
+      colors: [Colors.red, Colors.orange, Colors.green],
+      size: Vector2(size.x / 2, 10),
+      borderColor: Colors.black,
     );
   }
 
@@ -185,15 +200,19 @@ class Player extends SimplePlayer
       damage: attack,
       animationRight: PlayerSpriteSheet.whiteAttackEffectRight,
       size: Vector2.all(128),
+      centerOffset: Vector2.zero(),
     );
   }
 
   void execRangeAttack(double damage) {
+    List<Enemy> enemies = gameRef.livingEnemies().sortedByCompare(
+        (element) => element.position,
+        (a, b) => (a.distanceTo(position) - b.distanceTo(position)).toInt());
     simpleAttackRangeByAngle(
       attackFrom: AttackFromEnum.PLAYER_OR_ALLY,
       animation: PlayerSpriteSheet.fireBallRight,
       animationDestroy: PlayerSpriteSheet.explosionAnimation,
-      angle: gameRef.livingEnemies().firstOrNull?.getInverseAngleFromPlayer() ??
+      angle: enemies.firstOrNull?.getInverseAngleFromPlayer() ??
           Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
       size: Vector2.all(width * 0.7),
       damage: damage,
@@ -201,12 +220,12 @@ class Player extends SimplePlayer
       collision: CollisionConfig(
         collisions: [
           CollisionArea.rectangle(
-            size: Vector2(width / 3, width / 3),
+            size: Vector2(width, width),
             align: Vector2(width * 0.1, 0),
           ),
         ],
       ),
-      marginFromOrigin: 10,
+      marginFromOrigin: 0,
       lightingConfig: LightingConfig(
         radius: width / 2,
         blurBorder: width,
@@ -216,7 +235,25 @@ class Player extends SimplePlayer
   }
 
   @override
+  @override
+  void receiveDamage(attacker, damage, identify) {
+    /// Called when the enemy receive damage
+    showDamage(
+      damage,
+      onlyUp: true,
+      config: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.red,
+        fontSize: 40,
+      ),
+    );
+    super.receiveDamage(attacker, damage, identify);
+  }
+
+  @override
   void die() {
+    removeFromParent();
+    // gameRef.pauseEngine();
     super.die();
   }
 
@@ -242,12 +279,19 @@ class Player extends SimplePlayer
 
 class PlayerController extends StateController<Player> {
   asy.Timer? dayCycleTimer;
+  final int maxEnemies = 99;
+  int currentEnemies = 0;
+  asy.Timer? enemySpawnTimer;
+  Player? player;
 
   @override
   void onReady(Player component) {
+    player = component;
+    currentEnemies = 0;
     component.toggleLighting(true);
     super.onReady(component);
-    handleDayTimeCycle(component);
+    handleDayTimeCycle();
+    spawnEnemiesHandler();
   }
 
   @override
@@ -268,7 +312,40 @@ class PlayerController extends StateController<Player> {
     // }
   }
 
-  void handleDayTimeCycle(Player player) {
+  void spawnEnemiesHandler() {
+    enemySpawnTimer =
+        asy.Timer.periodic(const Duration(seconds: 3), spawnEnemies);
+  }
+
+  void spawnEnemies(_) {
+    if (player != null && !player!.isDead && currentEnemies < maxEnemies) {
+      currentEnemies++;
+      double x = player!.position.x +
+          (Random().nextDouble() * 2 - 1) *
+              Alfred.tileSize *
+              Alfred.getRandomNumber(
+                min: 4,
+                max: 10,
+              );
+      double y = player!.position.y +
+          (Random().nextDouble() * 2 - 1) *
+              Alfred.tileSize *
+              Alfred.getRandomNumber(
+                min: 4,
+                max: 10,
+              );
+
+      gameRef.add(
+        MyEnemy(
+          Vector2(x, y),
+        ),
+      );
+    } else {
+      enemySpawnTimer?.cancel();
+    }
+  }
+
+  void handleDayTimeCycle() {
     dayCycleTimer = asy.Timer.periodic(
         Duration(
           seconds:
@@ -277,7 +354,7 @@ class PlayerController extends StateController<Player> {
         ), (timer) {
       switch (gameStateController.state.dayTimeType) {
         case DayTimeType.day:
-          player.toggleLighting(true);
+          player?.toggleLighting(true);
           gameRef.lighting?.animateToColor(
             Colors.black.withOpacity(0.8),
             curve: Curves.fastLinearToSlowEaseIn,
@@ -290,7 +367,7 @@ class PlayerController extends StateController<Player> {
           );
           break;
         case DayTimeType.evening:
-          player.toggleLighting(true);
+          player?.toggleLighting(true);
           gameRef.lighting?.animateToColor(
             Colors.black,
             curve: Curves.fastLinearToSlowEaseIn,
@@ -301,7 +378,7 @@ class PlayerController extends StateController<Player> {
           );
           break;
         case DayTimeType.night:
-          player.toggleLighting(false);
+          player?.toggleLighting(false);
           gameRef.lighting?.animateToColor(
             Colors.transparent,
             curve: Curves.easeInOut,
@@ -312,7 +389,7 @@ class PlayerController extends StateController<Player> {
           );
           break;
         default:
-          player.toggleLighting(false);
+          player?.toggleLighting(false);
           gameRef.lighting?.animateToColor(
             Colors.transparent,
             curve: Curves.easeInOut,
