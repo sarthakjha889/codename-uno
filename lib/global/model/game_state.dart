@@ -29,7 +29,6 @@ class GameState with _$GameState {
     @Default(WeatherType.sunny) WeatherType weatherType,
     SolarSystemData? currentSolarSystem,
     PlanetData? currentPlanet,
-    @Default(0) int collectedGems,
   }) = _GameState;
 
   factory GameState.fromJson(Map<String, Object?> json) =>

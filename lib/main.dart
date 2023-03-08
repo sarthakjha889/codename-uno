@@ -52,10 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: CircularProgressIndicator(),
           );
         } else {
-          return PlanetSurface();
-          // SolarSystem system =
-          //     SolarSystem(solarSystemData: state.currentSolarSystem!);
-          // return LevelMap(system: system);
+          // return PlanetSurface();
+          SolarSystem system =
+              SolarSystem(solarSystemData: state.currentSolarSystem!);
+          return LevelMap(system: system);
         }
       },
     );

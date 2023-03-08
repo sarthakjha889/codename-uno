@@ -257,7 +257,7 @@ class Player extends SimplePlayer
   void render(Canvas canvas) {
     textPaint.render(
       canvas,
-      '${gameStateController.state.collectedGems.toString()} gems',
+      '${controller.gemCount.toString()} gems',
       Vector2(
         position.x + 60,
         position.y + 200,
@@ -275,6 +275,7 @@ class PlayerController extends StateController<Player> {
   asy.Timer? enemySpawnTimer;
   Player? player;
   asy.Timer? rangeAttackTimer;
+  int gemCount = 0;
 
   @override
   void onReady(Player component) {
@@ -309,6 +310,10 @@ class PlayerController extends StateController<Player> {
     //     observed: (enemies) => _handleObserveEnemy(enemies.first),
     //   );
     // }
+  }
+
+  void incrementGemCount() {
+    gemCount++;
   }
 
   void spawnEnemiesHandler() {

@@ -124,8 +124,4 @@ class GameStateController extends Cubit<GameState> {
   void setCurrentPlanet(PlanetData planet) {
     emit(state.copyWith(currentPlanet: planet));
   }
-
-  void incrementGemCount() {
-    emit(state.copyWith(collectedGems: state.collectedGems + 1));
-  }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:bonfire/bonfire.dart';
+import 'package:game_test_bonfire/global/characters/player.dart' as lp;
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/main.dart';
 import 'package:helpers/helpers.dart';
@@ -28,7 +29,7 @@ class Gem extends GameDecoration with Sensor {
   void onContact(GameComponent component) {
     // do anything with the Component that take contact
     if (component is Player) {
-      gameStateController.incrementGemCount();
+      BonfireInjector().get<lp.PlayerController>().incrementGemCount();
       removeFromParent();
     }
   }

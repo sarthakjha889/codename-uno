@@ -41,7 +41,9 @@ class Planet extends GameDecoration with Lighting, ObjectCollision, Movement {
       CollisionConfig(
         enable: true,
         collisions: [
-          CollisionArea.circle(radius: 32),
+          CollisionArea.circle(
+            radius: data.planetSize.x / 2,
+          ),
         ],
       ),
     );
