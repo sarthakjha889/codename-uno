@@ -7,6 +7,7 @@ import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'dart:async' as asy;
 import 'package:collection/collection.dart';
+import 'package:game_test_bonfire/global/objects/gem.dart';
 
 import 'package:game_test_bonfire/main.dart';
 import 'package:helpers/helpers.dart';
@@ -122,7 +123,7 @@ class Player extends SimplePlayer
   TextPaint textPaint = TextPaint(
       style: const TextStyle(
     color: Colors.white,
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: FontWeight.bold,
   ));
 
@@ -132,6 +133,7 @@ class Player extends SimplePlayer
           size: Vector2(128, 128),
           animation: PlayerSpriteSheet.simpleDirectionAnimation,
           speed: 1000,
+          life: 2000,
         ) {
     setupCollision(
       CollisionConfig(
@@ -182,12 +184,13 @@ class Player extends SimplePlayer
     }
     if (hasController) {
       if (event.event == ActionEvent.DOWN) {
-        if (event.id == 'attack-range') {
-          execRangeAttack(123);
+        if (event.id == 'attack-range' && gameRef.livingEnemies().isNotEmpty) {
+          execRangeAttack(
+              Alfred.getRandomNumber(min: 100, max: 500).toDouble());
         }
         if (event.id == 'attack-melee') {
           execMeleeAttack(
-            Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
+            Alfred.getRandomNumber(min: 100, max: 500).toDouble(),
           );
         }
       }
@@ -208,6 +211,7 @@ class Player extends SimplePlayer
     List<Enemy> enemies = gameRef.livingEnemies().sortedByCompare(
         (element) => element.position,
         (a, b) => (a.distanceTo(position) - b.distanceTo(position)).toInt());
+
     simpleAttackRangeByAngle(
       attackFrom: AttackFromEnum.PLAYER_OR_ALLY,
       animation: PlayerSpriteSheet.fireBallRight,
@@ -216,16 +220,8 @@ class Player extends SimplePlayer
           Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
       size: Vector2.all(width * 0.7),
       damage: damage,
-      speed: speed * 4,
-      collision: CollisionConfig(
-        collisions: [
-          CollisionArea.rectangle(
-            size: Vector2(width, width),
-            align: Vector2(width * 0.1, 0),
-          ),
-        ],
-      ),
-      marginFromOrigin: 0,
+      speed: speed * 10,
+      marginFromOrigin: 100,
       lightingConfig: LightingConfig(
         radius: width / 2,
         blurBorder: width,
@@ -259,20 +255,15 @@ class Player extends SimplePlayer
 
   @override
   void render(Canvas canvas) {
-    // do anything
-    // print(countDownSeconds);
-    // if (countDownSeconds != null) {
-    //   textPaint.render(
-    //     canvas,
-    //     // 'adsfsaf',
-    //     countDownSeconds.toString().toUpperCase(),
-    //     Vector2(
-    //       position.x - 100,
-    //       position.y - 100,
-    //     ),
-    //     anchor: Anchor.bottomCenter,
-    //   );
-    // }
+    textPaint.render(
+      canvas,
+      '${gameStateController.state.collectedGems.toString()} gems',
+      Vector2(
+        position.x + 60,
+        position.y + 200,
+      ),
+      anchor: Anchor.bottomCenter,
+    );
     super.render(canvas);
   }
 }
@@ -283,6 +274,7 @@ class PlayerController extends StateController<Player> {
   int currentEnemies = 0;
   asy.Timer? enemySpawnTimer;
   Player? player;
+  asy.Timer? rangeAttackTimer;
 
   @override
   void onReady(Player component) {
@@ -292,12 +284,19 @@ class PlayerController extends StateController<Player> {
     super.onReady(component);
     handleDayTimeCycle();
     spawnEnemiesHandler();
+    rangeAttackTimer = asy.Timer.periodic(Duration(milliseconds: 300), (timer) {
+      if (gameRef.livingEnemies().isNotEmpty) {
+        component.execRangeAttack(
+            Alfred.getRandomNumber(min: 100, max: 999).toDouble());
+      }
+    });
   }
 
   @override
   void onRemove(Player component) {
     // TODO: implement onRemove
     dayCycleTimer?.cancel();
+    rangeAttackTimer?.cancel();
     super.onRemove(component);
   }
 
@@ -314,7 +313,7 @@ class PlayerController extends StateController<Player> {
 
   void spawnEnemiesHandler() {
     enemySpawnTimer =
-        asy.Timer.periodic(const Duration(seconds: 3), spawnEnemies);
+        asy.Timer.periodic(const Duration(seconds: 1), spawnEnemies);
   }
 
   void spawnEnemies(_) {
@@ -338,6 +337,11 @@ class PlayerController extends StateController<Player> {
       gameRef.add(
         MyEnemy(
           Vector2(x, y),
+        ),
+      );
+      gameRef.add(
+        MyEnemy(
+          Vector2(x + Alfred.tileSize, y + Alfred.tileSize),
         ),
       );
     } else {

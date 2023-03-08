@@ -26,6 +26,7 @@ mixin _$GameState {
   WeatherType get weatherType => throw _privateConstructorUsedError;
   SolarSystemData? get currentSolarSystem => throw _privateConstructorUsedError;
   PlanetData? get currentPlanet => throw _privateConstructorUsedError;
+  int get collectedGems => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +45,8 @@ abstract class $GameStateCopyWith<$Res> {
       DayTimeType dayTimeType,
       WeatherType weatherType,
       SolarSystemData? currentSolarSystem,
-      PlanetData? currentPlanet});
+      PlanetData? currentPlanet,
+      int collectedGems});
 
   $GalaxyDataCopyWith<$Res> get galaxy;
   $SolarSystemDataCopyWith<$Res>? get currentSolarSystem;
@@ -70,6 +72,7 @@ class _$GameStateCopyWithImpl<$Res, $Val extends GameState>
     Object? weatherType = null,
     Object? currentSolarSystem = freezed,
     Object? currentPlanet = freezed,
+    Object? collectedGems = null,
   }) {
     return _then(_value.copyWith(
       galaxy: null == galaxy
@@ -96,6 +99,10 @@ class _$GameStateCopyWithImpl<$Res, $Val extends GameState>
           ? _value.currentPlanet
           : currentPlanet // ignore: cast_nullable_to_non_nullable
               as PlanetData?,
+      collectedGems: null == collectedGems
+          ? _value.collectedGems
+          : collectedGems // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 
@@ -145,7 +152,8 @@ abstract class _$$_GameStateCopyWith<$Res> implements $GameStateCopyWith<$Res> {
       DayTimeType dayTimeType,
       WeatherType weatherType,
       SolarSystemData? currentSolarSystem,
-      PlanetData? currentPlanet});
+      PlanetData? currentPlanet,
+      int collectedGems});
 
   @override
   $GalaxyDataCopyWith<$Res> get galaxy;
@@ -172,6 +180,7 @@ class __$$_GameStateCopyWithImpl<$Res>
     Object? weatherType = null,
     Object? currentSolarSystem = freezed,
     Object? currentPlanet = freezed,
+    Object? collectedGems = null,
   }) {
     return _then(_$_GameState(
       galaxy: null == galaxy
@@ -198,6 +207,10 @@ class __$$_GameStateCopyWithImpl<$Res>
           ? _value.currentPlanet
           : currentPlanet // ignore: cast_nullable_to_non_nullable
               as PlanetData?,
+      collectedGems: null == collectedGems
+          ? _value.collectedGems
+          : collectedGems // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -211,7 +224,8 @@ class _$_GameState implements _GameState {
       this.dayTimeType = DayTimeType.day,
       this.weatherType = WeatherType.sunny,
       this.currentSolarSystem,
-      this.currentPlanet});
+      this.currentPlanet,
+      this.collectedGems = 0});
 
   factory _$_GameState.fromJson(Map<String, dynamic> json) =>
       _$$_GameStateFromJson(json);
@@ -231,10 +245,13 @@ class _$_GameState implements _GameState {
   final SolarSystemData? currentSolarSystem;
   @override
   final PlanetData? currentPlanet;
+  @override
+  @JsonKey()
+  final int collectedGems;
 
   @override
   String toString() {
-    return 'GameState(galaxy: $galaxy, isReady: $isReady, dayTimeType: $dayTimeType, weatherType: $weatherType, currentSolarSystem: $currentSolarSystem, currentPlanet: $currentPlanet)';
+    return 'GameState(galaxy: $galaxy, isReady: $isReady, dayTimeType: $dayTimeType, weatherType: $weatherType, currentSolarSystem: $currentSolarSystem, currentPlanet: $currentPlanet, collectedGems: $collectedGems)';
   }
 
   @override
@@ -251,13 +268,15 @@ class _$_GameState implements _GameState {
             (identical(other.currentSolarSystem, currentSolarSystem) ||
                 other.currentSolarSystem == currentSolarSystem) &&
             (identical(other.currentPlanet, currentPlanet) ||
-                other.currentPlanet == currentPlanet));
+                other.currentPlanet == currentPlanet) &&
+            (identical(other.collectedGems, collectedGems) ||
+                other.collectedGems == collectedGems));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, galaxy, isReady, dayTimeType,
-      weatherType, currentSolarSystem, currentPlanet);
+      weatherType, currentSolarSystem, currentPlanet, collectedGems);
 
   @JsonKey(ignore: true)
   @override
@@ -280,7 +299,8 @@ abstract class _GameState implements GameState {
       final DayTimeType dayTimeType,
       final WeatherType weatherType,
       final SolarSystemData? currentSolarSystem,
-      final PlanetData? currentPlanet}) = _$_GameState;
+      final PlanetData? currentPlanet,
+      final int collectedGems}) = _$_GameState;
 
   factory _GameState.fromJson(Map<String, dynamic> json) =
       _$_GameState.fromJson;
@@ -297,6 +317,8 @@ abstract class _GameState implements GameState {
   SolarSystemData? get currentSolarSystem;
   @override
   PlanetData? get currentPlanet;
+  @override
+  int get collectedGems;
   @override
   @JsonKey(ignore: true)
   _$$_GameStateCopyWith<_$_GameState> get copyWith =>

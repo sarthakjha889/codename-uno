@@ -13,6 +13,7 @@ Map<String, dynamic> _$GameStateToJson(GameState instance) => <String, dynamic>{
       'weatherType': _$WeatherTypeEnumMap[instance.weatherType]!,
       'currentSolarSystem': instance.currentSolarSystem,
       'currentPlanet': instance.currentPlanet,
+      'collectedGems': instance.collectedGems,
     };
 
 const _$DayTimeTypeEnumMap = {
@@ -43,6 +44,7 @@ _$_GameState _$$_GameStateFromJson(Map<String, dynamic> json) => _$_GameState(
       currentPlanet: json['currentPlanet'] == null
           ? null
           : PlanetData.fromJson(json['currentPlanet'] as Map<String, dynamic>),
+      collectedGems: json['collectedGems'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$$_GameStateToJson(_$_GameState instance) =>
@@ -53,4 +55,5 @@ Map<String, dynamic> _$$_GameStateToJson(_$_GameState instance) =>
       'weatherType': _$WeatherTypeEnumMap[instance.weatherType]!,
       'currentSolarSystem': instance.currentSolarSystem,
       'currentPlanet': instance.currentPlanet,
+      'collectedGems': instance.collectedGems,
     };

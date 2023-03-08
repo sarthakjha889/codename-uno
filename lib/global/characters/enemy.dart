@@ -1,6 +1,7 @@
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
+import 'package:game_test_bonfire/global/objects/gem.dart';
 
 class EnemySpriteSheet {
   static Future<SpriteAnimation> get idleLeft => SpriteAnimation.load(
@@ -92,6 +93,7 @@ class MyEnemy extends SimpleEnemy with ObjectCollision, UseBarLife {
 
   @override
   void die() {
+    gameRef.add(Gem(position));
     removeFromParent();
 
     /// Called when the enemy die
@@ -106,7 +108,9 @@ class MyEnemy extends SimpleEnemy with ObjectCollision, UseBarLife {
     // );
     seeAndMoveToPlayer(
       closePlayer: (player) {
-        simpleAttackMelee(damage: 0, size: size);
+        simpleAttackMelee(
+            damage: Alfred.getRandomNumber(min: 100, max: 200).toDouble(),
+            size: size);
       },
       radiusVision: Alfred.tileSize * 15,
     );
