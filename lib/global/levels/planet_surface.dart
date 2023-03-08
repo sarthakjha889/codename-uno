@@ -6,7 +6,8 @@ import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_test_bonfire/global/characters/enemy.dart';
-import 'package:game_test_bonfire/global/characters/player.dart' as p;
+import 'package:game_test_bonfire/global/characters/player/player.dart';
+import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/levels/galaxy_map.dart';
@@ -23,19 +24,18 @@ class PlanetSurface extends StatefulWidget {
 class _PlanetSurfaceState extends State<PlanetSurface> {
   @override
   void initState() {
-    BonfireInjector().put((i) => p.PlayerController());
-
     super.initState();
+    BonfireInjector().put((i) => PlayerController());
+    BonfireInjector().put((i) => GameController());
     gameStateController.handlePlanetSurfaceStart();
   }
 
   @override
   Widget build(BuildContext context) {
-    p.Player player = p.Player(Alfred.getMapCenter());
+    PlayerCharacter player = PlayerCharacter(Alfred.getMapCenter());
     Enemy enemy = MyEnemy(
       Vector2.all(Alfred.getMapCenter().x - 200),
     );
-    GameController gameController = GameController();
 
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
@@ -47,7 +47,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                   ? Colors.black.withOpacity(0.8)
                   : Colors.transparent,
           overlayBuilderMap: {
-            'miniMap': (context, game) => MiniMap(
+            'minimap': (context, game) => MiniMap(
                   game: game,
                   zoom: 0.3,
                   margin: const EdgeInsets.all(20),
@@ -55,24 +55,39 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                   size: Vector2.all(100),
                   border: Border.all(color: Colors.white.withOpacity(0.5)),
                 ),
-            'mapView': (context, game) => ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const GalaxyMap(),
-                      ),
+            'gemCount': (context, game) => Positioned(
+                  child: StateControllerConsumer<PlayerController>(builder:
+                      (BuildContext context, PlayerController controller) {
+                    return Text(
+                      controller.gemCount.toString(),
+                      style: TextStyle(fontSize: 42),
                     );
-                  },
-                  child: const Text('Open map'),
+                  }),
+                ),
+            'galaxyMap': (context, game) => Positioned(
+                  top: 100,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const GalaxyMap(),
+                        ),
+                      );
+                    },
+                    child: const Text('Open map'),
+                  ),
                 ),
           },
           decorations: Alfred.getForestDecorations(),
           initialActiveOverlays: const [
-            'miniMap',
-            'mapView',
+            'minimap',
+            'gemCount',
+            'galaxyMap',
           ],
           joystick: Joystick(
-            directional: JoystickDirectional(isFixed: false),
+            directional: JoystickDirectional(
+              isFixed: false,
+            ),
             actions: [
               JoystickAction(
                 actionId: 'attack-range',
@@ -95,7 +110,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
             sizeMovementWindow: Vector2(50, 50),
             zoom: 0.5,
           ),
-          gameController: gameController,
+          gameController: BonfireInjector().get<GameController>(),
           map: MatrixMapGenerator.generate(
             matrix: Alfred.generateNoiseMap(
               size: Alfred.mapSize,
