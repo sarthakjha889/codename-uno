@@ -95,6 +95,11 @@ class PlayerSpriteSheet {
   static SimpleDirectionAnimation get simpleDirectionAnimation =>
       SimpleDirectionAnimation(
         idleRight: idleRight,
+        idleLeft: idleLeft,
         runRight: runRight,
+        runLeft: runLeft,
+        eightDirection: false,
+        enabledFlipX: false,
+        enabledFlipY: false,
       );
 }

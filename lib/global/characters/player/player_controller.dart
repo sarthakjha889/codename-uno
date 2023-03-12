@@ -11,6 +11,7 @@ import 'dart:async' as asy;
 import 'package:collection/collection.dart';
 
 import 'package:game_test_bonfire/main.dart';
+import 'package:helpers/helpers.dart';
 
 class PlayerController extends StateController<Player> {
   asy.Timer? dayCycleTimer;
@@ -20,6 +21,7 @@ class PlayerController extends StateController<Player> {
   PlayerCharacter? player;
   asy.Timer? rangeAttackTimer;
   int gemCount = 0;
+  bool shouldAutoRangeAttack = true;
 
   @override
   void onReady(Player component) {
@@ -30,9 +32,9 @@ class PlayerController extends StateController<Player> {
     handleDayTimeCycle();
     spawnEnemiesHandler();
     rangeAttackTimer = asy.Timer.periodic(Duration(milliseconds: 300), (timer) {
-      if (gameRef.livingEnemies().isNotEmpty) {
+      if (gameRef.livingEnemies().isNotEmpty && shouldAutoRangeAttack) {
         player?.execRangeAttack(
-            Alfred.getRandomNumber(min: 100, max: 999).toDouble());
+            Alfred.getRandomNumber(min: 999, max: 9999).toDouble());
       }
     });
   }

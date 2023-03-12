@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:async' as asy;
+
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
@@ -13,6 +16,7 @@ class PlayerCharacter extends SimplePlayer
         UseBarLife {
   double nightVisionMultiplier = 3;
   int? countDownSeconds;
+  JoystickMoveDirectional _lastDirection = JoystickMoveDirectional.IDLE;
 
   @override
   PlayerController get controller => BonfireInjector().get<PlayerController>();
@@ -34,6 +38,7 @@ class PlayerCharacter extends SimplePlayer
           life: 2000,
         ) {
     dPadAngles = false;
+
     setupCollision(
       CollisionConfig(
         enable: true,
@@ -60,7 +65,8 @@ class PlayerCharacter extends SimplePlayer
     if (enable) {
       setupLighting(
         LightingConfig(
-          radius: Alfred.tileSize * nightVisionMultiplier,
+          radius: min(Alfred.tileSize * nightVisionMultiplier,
+              MediaQuery.of(context).size.shortestSide),
           color: Colors.black.withOpacity(0.1),
           blurBorder: nightVisionMultiplier * Alfred.tileSize,
         ),
@@ -68,12 +74,61 @@ class PlayerCharacter extends SimplePlayer
     } else {
       setupLighting(
         LightingConfig(
-          radius: Alfred.tileSize * nightVisionMultiplier,
+          radius: min(Alfred.tileSize * nightVisionMultiplier,
+              MediaQuery.of(context).size.shortestSide),
           color: Colors.white.withOpacity(0.01),
           blurBorder: nightVisionMultiplier * Alfred.tileSize,
         ),
       );
     }
+  }
+
+  @override
+  void joystickChangeDirectional(JoystickDirectionalEvent event) {
+    if (_lastDirection != event.directional) {
+      switch (event.directional) {
+        case JoystickMoveDirectional.IDLE:
+          if ([
+            JoystickMoveDirectional.MOVE_DOWN_LEFT,
+            JoystickMoveDirectional.MOVE_LEFT,
+            JoystickMoveDirectional.MOVE_UP_LEFT
+          ].contains(_lastDirection)) {
+            animation?.play(SimpleAnimationEnum.idleLeft);
+          }
+          if ([
+            JoystickMoveDirectional.MOVE_DOWN_RIGHT,
+            JoystickMoveDirectional.MOVE_RIGHT,
+            JoystickMoveDirectional.MOVE_UP_RIGHT
+          ].contains(_lastDirection)) {
+            animation?.play(SimpleAnimationEnum.idleRight);
+          }
+          break;
+        case JoystickMoveDirectional.MOVE_LEFT:
+          animation?.play(SimpleAnimationEnum.runLeft);
+          break;
+        case JoystickMoveDirectional.MOVE_RIGHT:
+          animation?.play(SimpleAnimationEnum.runRight);
+          break;
+        case JoystickMoveDirectional.MOVE_DOWN:
+          animation?.play(SimpleAnimationEnum.runRight);
+          break;
+        case JoystickMoveDirectional.MOVE_DOWN_LEFT:
+          animation?.play(SimpleAnimationEnum.runLeft);
+          break;
+        case JoystickMoveDirectional.MOVE_DOWN_RIGHT:
+          animation?.play(SimpleAnimationEnum.runRight);
+          break;
+        case JoystickMoveDirectional.MOVE_UP_LEFT:
+          animation?.play(SimpleAnimationEnum.runLeft);
+          break;
+        case JoystickMoveDirectional.MOVE_UP_RIGHT:
+          animation?.play(SimpleAnimationEnum.runRight);
+          break;
+        default:
+      }
+    }
+    _lastDirection = event.directional;
+    super.joystickChangeDirectional(event);
   }
 
   @override
@@ -84,8 +139,7 @@ class PlayerCharacter extends SimplePlayer
     if (hasController) {
       if (event.event == ActionEvent.DOWN) {
         if (event.id == 'attack-range' && gameRef.livingEnemies().isNotEmpty) {
-          execRangeAttack(
-              Alfred.getRandomNumber(min: 100, max: 500).toDouble());
+          execRangeSpecialAttack();
         }
         if (event.id == 'attack-melee') {
           execMeleeAttack(
@@ -106,7 +160,33 @@ class PlayerCharacter extends SimplePlayer
     );
   }
 
-  void execRangeAttack(double damage) {
+  void execRangeSpecialAttack() {
+    int attackCount = 0;
+    int maxAttackLimit = 100;
+    controller.shouldAutoRangeAttack = false;
+    double angle = 0;
+    asy.Timer.periodic(Duration(milliseconds: 10), (timer) {
+      if (attackCount++ < maxAttackLimit) {
+        if (angle > 360) {
+          angle = 0;
+        }
+        execRangeAttack(
+          Alfred.getRandomNumber(min: 100, max: 999).toDouble(),
+          angle: angle++,
+          speed: speed * 10,
+        );
+      } else {
+        controller.shouldAutoRangeAttack = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  void execRangeAttack(
+    double damage, {
+    double? angle,
+    double? speed,
+  }) {
     List<Enemy> enemies = gameRef.livingEnemies().sortedByCompare(
           (element) => element.position,
           (a, b) => (a.distanceTo(position) - b.distanceTo(position)).toInt(),
@@ -116,11 +196,12 @@ class PlayerCharacter extends SimplePlayer
       attackFrom: AttackFromEnum.PLAYER_OR_ALLY,
       animation: PlayerSpriteSheet.fireBallRight,
       animationDestroy: PlayerSpriteSheet.explosionAnimation,
-      angle: enemies.firstOrNull?.getInverseAngleFromPlayer() ??
+      angle: angle ??
+          enemies.firstOrNull?.getInverseAngleFromPlayer() ??
           Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
       size: Vector2.all(width * 0.7),
       damage: damage,
-      speed: speed * 10,
+      speed: speed ?? this.speed * 10,
       marginFromOrigin: 100,
       lightingConfig: LightingConfig(
         radius: width / 2,
