@@ -33,10 +33,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
   @override
   Widget build(BuildContext context) {
     PlayerCharacter player = PlayerCharacter(Alfred.getMapCenter());
-    Enemy enemy = MyEnemy(
-      Vector2.all(Alfred.getMapCenter().x - 200),
-    );
-
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
       builder: (context, state) {
@@ -102,7 +98,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
             ],
           ),
           player: player,
-          enemies: [enemy],
           cameraConfig: CameraConfig(
             moveOnlyMapArea: true,
             angle: 45 * pi / 180,
@@ -152,6 +147,8 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
               );
             },
           ),
+          // onReady: (value) =>
+          //     value.addJoystickObserver(LocalJoystickListener()),
         );
       },
     );

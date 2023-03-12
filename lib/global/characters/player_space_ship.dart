@@ -34,6 +34,7 @@ class PlayerSpaceShip extends SimplePlayer with ObjectCollision {
           animation: PlayerSpaceShipSpriteSheet.simpleDirectionAnimation,
           speed: 1000,
         ) {
+    dPadAngles = false;
     setupCollision(
       CollisionConfig(
         enable: true,

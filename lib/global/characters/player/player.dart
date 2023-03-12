@@ -33,6 +33,7 @@ class PlayerCharacter extends SimplePlayer
           speed: 1000,
           life: 2000,
         ) {
+    dPadAngles = false;
     setupCollision(
       CollisionConfig(
         enable: true,
