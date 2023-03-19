@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:game_test_bonfire/global/characters/enemy.dart';
 import 'package:game_test_bonfire/global/characters/player/player.dart';
 import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
@@ -22,12 +21,12 @@ class PlanetSurface extends StatefulWidget {
 }
 
 class _PlanetSurfaceState extends State<PlanetSurface> {
+  PlayerController playerController = PlayerController();
   @override
   void initState() {
     super.initState();
-    BonfireInjector().put((i) => PlayerController());
+    BonfireInjector().put((i) => playerController);
     BonfireInjector().put((i) => GameController());
-    gameStateController.handlePlanetSurfaceStart();
   }
 
   @override
@@ -37,11 +36,10 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
       bloc: gameStateController,
       builder: (context, state) {
         return BonfireWidget(
-          lightingColorGame: state.dayTimeType == DayTimeType.night
-              ? Colors.blueGrey[900]
-              : state.dayTimeType == DayTimeType.evening
-                  ? Colors.black.withOpacity(0.8)
-                  : Colors.transparent,
+          lightingColorGame: playerController.currentDayTimeType.lighting,
+          // constructionMode: true,
+          // collisionAreaColor: Colors.red.withOpacity(0.5),
+          // showCollisionArea: true,
           overlayBuilderMap: {
             'minimap': (context, game) => MiniMap(
                   game: game,
@@ -56,7 +54,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                       (BuildContext context, PlayerController controller) {
                     return Text(
                       controller.gemCount.toString(),
-                      style: TextStyle(fontSize: 42),
+                      style: const TextStyle(fontSize: 42),
                     );
                   }),
                 ),
@@ -87,12 +85,12 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
             actions: [
               JoystickAction(
                 actionId: 'attack-range',
-                margin: EdgeInsets.all(100),
+                margin: const EdgeInsets.all(100),
                 color: Colors.red,
               ),
               JoystickAction(
                 actionId: 'attack-melee',
-                margin: EdgeInsets.all(150),
+                margin: const EdgeInsets.all(150),
                 color: Colors.yellow,
               ),
             ],

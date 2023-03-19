@@ -14,13 +14,7 @@ class PlayerCharacter extends SimplePlayer
         Lighting,
         UseStateController<PlayerController>,
         UseBarLife {
-  double nightVisionMultiplier = 3;
-  int? countDownSeconds;
-  JoystickMoveDirectional _lastDirection = JoystickMoveDirectional.IDLE;
-
-  @override
-  PlayerController get controller => BonfireInjector().get<PlayerController>();
-
+  // TextPaint to render text on hit
   TextPaint textPaint = TextPaint(
     style: const TextStyle(
       color: Colors.white,
@@ -29,23 +23,36 @@ class PlayerCharacter extends SimplePlayer
     ),
   );
 
+  //
+  JoystickMoveDirectional _lastDirection = JoystickMoveDirectional.IDLE;
+
+  int movementSpeed = 500;
+  int rangedAttackInterval = 2000;
+  int rangedAttackSpeed = 1000;
+  double maxRangedAttackSpeed = 3000;
+
+  double nightVisionMultiplier = 2;
+  double movementSpeedMultiplier = 1;
+  double rangedAttackSpeedMultiplier = 1;
+  double rangedAttackIntervalMultiplier = 1;
+
   PlayerCharacter(Vector2 position)
       : super(
           position: position,
           size: Vector2(128, 128),
           animation: PlayerSpriteSheet.simpleDirectionAnimation,
-          speed: 1000,
-          life: 2000,
+          speed: 1,
+          life: 5000,
         ) {
     dPadAngles = false;
-
+    setPlayerMovementSpeed();
     setupCollision(
       CollisionConfig(
         enable: true,
         collisions: [
           CollisionArea.rectangle(
-            size: Vector2(128, 128),
-            align: Vector2(0, 0),
+            size: Vector2(size.x / 3, size.y / 3),
+            align: Vector2(size.x / 3, size.y / 3),
           ),
         ],
       ),
@@ -59,6 +66,14 @@ class PlayerCharacter extends SimplePlayer
       size: Vector2(size.x / 2, 10),
       borderColor: Colors.black,
     );
+  }
+
+  void setPlayerMovementSpeed() {
+    speed = movementSpeedMultiplier * movementSpeed;
+  }
+
+  double getPlayerRangedAttackSpeed() {
+    return rangedAttackSpeedMultiplier + rangedAttackSpeed;
   }
 
   toggleLighting(bool enable) {
@@ -165,7 +180,7 @@ class PlayerCharacter extends SimplePlayer
     int maxAttackLimit = 100;
     controller.shouldAutoRangeAttack = false;
     double angle = 0;
-    asy.Timer.periodic(Duration(milliseconds: 10), (timer) {
+    asy.Timer.periodic(const Duration(milliseconds: 10), (timer) {
       if (attackCount++ < maxAttackLimit) {
         if (angle > 360) {
           angle = 0;
@@ -173,7 +188,7 @@ class PlayerCharacter extends SimplePlayer
         execRangeAttack(
           Alfred.getRandomNumber(min: 100, max: 999).toDouble(),
           angle: angle++,
-          speed: speed * 10,
+          speed: rangedAttackSpeedMultiplier * rangedAttackSpeed * 3,
         );
       } else {
         controller.shouldAutoRangeAttack = true;
@@ -191,7 +206,6 @@ class PlayerCharacter extends SimplePlayer
           (element) => element.position,
           (a, b) => (a.distanceTo(position) - b.distanceTo(position)).toInt(),
         );
-
     simpleAttackRangeByAngle(
       attackFrom: AttackFromEnum.PLAYER_OR_ALLY,
       animation: PlayerSpriteSheet.fireBallRight,
@@ -199,10 +213,18 @@ class PlayerCharacter extends SimplePlayer
       angle: angle ??
           enemies.firstOrNull?.getInverseAngleFromPlayer() ??
           Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
-      size: Vector2.all(width * 0.7),
+      size: Vector2.all(width),
       damage: damage,
-      speed: speed ?? this.speed * 10,
-      marginFromOrigin: 100,
+      marginFromOrigin: ((gameRef.player?.size.x ?? 144) / 3),
+      collision: CollisionConfig(
+        collisions: [
+          CollisionArea.circle(
+            radius: width * 0.2,
+            align: Vector2((width * 0.7) / 4, (width * 0.7) / 4),
+          ),
+        ],
+      ),
+      speed: min(maxRangedAttackSpeed, speed ?? getPlayerRangedAttackSpeed()),
       lightingConfig: LightingConfig(
         radius: width / 2,
         blurBorder: width,

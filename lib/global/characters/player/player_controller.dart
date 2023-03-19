@@ -1,19 +1,16 @@
 import 'dart:math';
+import 'dart:async' as asy;
 
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/characters/enemy.dart';
 import 'package:game_test_bonfire/global/characters/player/player.dart';
-import 'package:game_test_bonfire/global/characters/player/player_spritesheet.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
-import 'dart:async' as asy;
-import 'package:collection/collection.dart';
-
 import 'package:game_test_bonfire/main.dart';
-import 'package:helpers/helpers.dart';
 
 class PlayerController extends StateController<Player> {
+  late DayTimeType currentDayTimeType;
   asy.Timer? dayCycleTimer;
   final int maxEnemies = 99;
   int currentEnemies = 0;
@@ -23,6 +20,27 @@ class PlayerController extends StateController<Player> {
   int gemCount = 0;
   bool shouldAutoRangeAttack = true;
 
+  PlayerController() {
+    currentDayTimeType = Alfred.getRandomValueFromList(DayTimeType.values);
+  }
+
+  asy.Timer? getAutoRangeAttackScheduler() {
+    if (player != null) {
+      return asy.Timer.periodic(
+          Duration(
+              milliseconds: (player!.rangedAttackInterval *
+                      player!.rangedAttackIntervalMultiplier)
+                  .toInt()), (timer) {
+        if (gameRef.livingEnemies().isNotEmpty && shouldAutoRangeAttack) {
+          player?.execRangeAttack(
+            Alfred.getRandomNumber(min: 100, max: 999).toDouble(),
+          );
+        }
+      });
+    }
+    return null;
+  }
+
   @override
   void onReady(Player component) {
     player = component as PlayerCharacter;
@@ -31,12 +49,7 @@ class PlayerController extends StateController<Player> {
     super.onReady(component);
     handleDayTimeCycle();
     spawnEnemiesHandler();
-    rangeAttackTimer = asy.Timer.periodic(Duration(milliseconds: 300), (timer) {
-      if (gameRef.livingEnemies().isNotEmpty && shouldAutoRangeAttack) {
-        player?.execRangeAttack(
-            Alfred.getRandomNumber(min: 999, max: 9999).toDouble());
-      }
-    });
+    rangeAttackTimer = getAutoRangeAttackScheduler();
   }
 
   @override
@@ -65,6 +78,12 @@ class PlayerController extends StateController<Player> {
 
   void incrementGemCount() {
     gemCount++;
+    // player?.movementSpeedMultiplier += 0.01;
+    // player?.rangedAttackIntervalMultiplier -= 0.01;
+    // player?.rangedAttackSpeedMultiplier += 0.01;
+    // player?.setPlayerMovementSpeed();
+    // rangeAttackTimer?.cancel();
+    // rangeAttackTimer = getAttackTimer();
     notifyListeners();
   }
 
@@ -80,15 +99,15 @@ class PlayerController extends StateController<Player> {
           (Random().nextDouble() * 2 - 1) *
               Alfred.tileSize *
               Alfred.getRandomNumber(
-                min: 4,
-                max: 10,
+                min: 8,
+                max: 20,
               );
       double y = player!.position.y +
           (Random().nextDouble() * 2 - 1) *
               Alfred.tileSize *
               Alfred.getRandomNumber(
-                min: 4,
-                max: 10,
+                min: 8,
+                max: 20,
               );
 
       gameRef.add(
@@ -113,55 +132,14 @@ class PlayerController extends StateController<Player> {
               gameStateController.state.currentPlanet?.dayDurationInSeconds ??
                   30,
         ), (timer) {
-      switch (gameStateController.state.dayTimeType) {
-        case DayTimeType.day:
-          player?.toggleLighting(true);
-          gameRef.lighting?.animateToColor(
-            Colors.black.withOpacity(0.8),
-            curve: Curves.fastLinearToSlowEaseIn,
-            duration: const Duration(seconds: 3),
-          );
-          gameStateController.emit(
-            gameStateController.state.copyWith(
-              dayTimeType: DayTimeType.evening,
-            ),
-          );
-          break;
-        case DayTimeType.evening:
-          player?.toggleLighting(true);
-          gameRef.lighting?.animateToColor(
-            Colors.black,
-            curve: Curves.fastLinearToSlowEaseIn,
-            duration: const Duration(seconds: 3),
-          );
-          gameStateController.emit(
-            gameStateController.state.copyWith(dayTimeType: DayTimeType.night),
-          );
-          break;
-        case DayTimeType.night:
-          player?.toggleLighting(false);
-          gameRef.lighting?.animateToColor(
-            Colors.transparent,
-            curve: Curves.easeInOut,
-            duration: const Duration(seconds: 3),
-          );
-          gameStateController.emit(
-            gameStateController.state.copyWith(dayTimeType: DayTimeType.day),
-          );
-          break;
-        default:
-          player?.toggleLighting(false);
-          gameRef.lighting?.animateToColor(
-            Colors.transparent,
-            curve: Curves.easeInOut,
-            duration: const Duration(seconds: 3),
-          );
-          gameStateController.emit(
-            gameStateController.state.copyWith(
-              dayTimeType: DayTimeType.day,
-            ),
-          );
-      }
+      currentDayTimeType = currentDayTimeType.next;
+      player?.toggleLighting(currentDayTimeType.hasLight);
+      gameRef.lighting?.animateToColor(
+        currentDayTimeType.lighting,
+        curve: Curves.fastLinearToSlowEaseIn,
+        duration: const Duration(seconds: 3),
+      );
+      notifyListeners();
     });
   }
 }
