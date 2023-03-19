@@ -43,7 +43,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           overlayBuilderMap: {
             'minimap': (context, game) => MiniMap(
                   game: game,
-                  zoom: 0.3,
+                  zoom: 0.2,
                   margin: const EdgeInsets.all(20),
                   borderRadius: BorderRadius.circular(10),
                   size: Vector2.all(100),
@@ -98,10 +98,13 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           player: player,
           cameraConfig: CameraConfig(
             moveOnlyMapArea: true,
+            setZoomLimitToFitMap: true,
             angle: 45 * pi / 180,
             target: player,
             sizeMovementWindow: Vector2(50, 50),
-            zoom: 0.5,
+            zoom: MediaQuery.of(context).size.shortestSide > 800
+                ? MediaQuery.of(context).size.shortestSide / 1500
+                : MediaQuery.of(context).size.shortestSide / 1000,
           ),
           gameController: BonfireInjector().get<GameController>(),
           map: MatrixMapGenerator.generate(
