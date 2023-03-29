@@ -22,6 +22,7 @@ class PlayerController extends StateController<Player> {
 
   PlayerController() {
     currentDayTimeType = Alfred.getRandomValueFromList(DayTimeType.values);
+    // currentDayTimeType = DayTimeType.day;
   }
 
   asy.Timer? getAutoRangeAttackScheduler() {

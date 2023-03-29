@@ -1,5 +1,6 @@
 // import 'package:bonfire/bonfire.dart';
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:bonfire/bonfire.dart';
@@ -10,8 +11,12 @@ import 'package:game_test_bonfire/global/characters/player/player_controller.dar
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:game_test_bonfire/global/levels/galaxy_map.dart';
+import 'package:game_test_bonfire/global/levels/map_gen_test.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'package:game_test_bonfire/main.dart';
+import 'package:helpers/helpers.dart';
+
+int count = 0;
 
 class PlanetSurface extends StatefulWidget {
   const PlanetSurface({super.key});
@@ -31,6 +36,8 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
 
   @override
   Widget build(BuildContext context) {
+    List<List<double>> map = mapToMatrix();
+
     PlayerCharacter player = PlayerCharacter(Alfred.getMapCenter());
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
@@ -72,7 +79,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                   ),
                 ),
           },
-          decorations: Alfred.getForestDecorations(),
+          decorations: Alfred.getForestDecorationAsPerMap(map),
           initialActiveOverlays: const [
             'minimap',
             'gemCount',
@@ -102,40 +109,48 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
             angle: 45 * pi / 180,
             target: player,
             sizeMovementWindow: Vector2(50, 50),
+            // zoom: 0.1,
             zoom: MediaQuery.of(context).size.shortestSide > 800
                 ? MediaQuery.of(context).size.shortestSide / 1500
                 : MediaQuery.of(context).size.shortestSide / 1000,
           ),
           gameController: BonfireInjector().get<GameController>(),
           map: MatrixMapGenerator.generate(
-            matrix: Alfred.generateNoiseMap(
-              size: Alfred.mapSize,
-              frequency: 0.08,
-              gain: 0.3,
-            ),
+            matrix: map,
+            axisInverted: true,
             builder: (ItemMatrixProperties prop) {
+              int value = prop.value.toInt();
               TileModelSprite? sprite = TileModelSprite(
-                path: 'terrain/tiles/dirt_lighted_rocks.png',
+                path: 'terrain/tiles/dirt_clay.png',
               );
-              if (prop.value > 0 && prop.value < 0.1) {
+              if (value == 1) {
                 sprite = TileModelSprite(
-                  path: 'terrain/tiles/Grass_normal.png',
+                  path: 'terrain/tiles/dirt_clay.png',
                 );
-              } else if (prop.value >= 0.1 && prop.value < 0.23) {
+              }
+              if (value == 2) {
+                sprite = TileModelSprite(
+                  path: 'terrain/tiles/water.png',
+                );
+              }
+              if (value == 3 || value == 4) {
                 sprite = TileModelSprite(
                   path: 'terrain/tiles/Grass_darked.png',
                 );
-              } else if (prop.value <= 0 && prop.value > -0.1) {
+              }
+              if (value == 6) {
                 sprite = TileModelSprite(
-                  path: 'terrain/tiles/Grass_normal.png',
+                  path: 'terrain/tiles/Grass_overcorrupted.png',
                 );
-              } else if (prop.value <= -0.1 && prop.value > -0.3) {
+              }
+              if (value == 7) {
                 sprite = TileModelSprite(
-                  path: 'terrain/tiles/Grass_lighted.png',
+                  path: 'floor_1.png',
                 );
-              } else if (prop.value <= -0.3) {
+              }
+              if (value == 5) {
                 sprite = TileModelSprite(
-                  path: 'terrain/tiles/dirt_lighted_rocks.png',
+                  path: 'wall.png',
                 );
               }
               return TileModel(

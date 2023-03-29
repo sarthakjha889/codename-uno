@@ -11,7 +11,7 @@ import 'package:game_test_bonfire/global/objects/map_boundary_tile.dart';
 
 class Alfred {
   static Random random = Random();
-  static int mapSize = 25;
+  static int mapSize = 30;
   static int tileSize = 256;
 
   static pushNewLevel({
@@ -146,6 +146,33 @@ class Alfred {
               ),
             ),
           );
+        }
+      }
+    }
+    return list;
+  }
+
+  static List<GameDecoration> getForestDecorationAsPerMap(
+      List<List<double>> map) {
+    List<GameDecoration> list = [...getMapBoundaries()];
+    for (int i = 0; i < map.length; i++) {
+      for (int j = 0; j < map.length; j++) {
+        if (map[j][i] == 3 || map[j][i] == 4) {
+          random.nextBool()
+              ? list.add(
+                  TreeDecoration(
+                    Vector2(
+                      (i * Alfred.tileSize).toDouble(),
+                      (Alfred.tileSize * j).toDouble() - (Alfred.tileSize / 2),
+                    ),
+                  ),
+                )
+              : list.add(GrassDecoration(
+                  Vector2(
+                    (i * Alfred.tileSize).toDouble(),
+                    (Alfred.tileSize * j).toDouble() - (Alfred.tileSize / 2),
+                  ),
+                ));
         }
       }
     }

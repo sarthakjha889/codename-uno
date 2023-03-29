@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:game_test_bonfire/global/controller/game_state_controller.dart';
+import 'package:game_test_bonfire/global/levels/map_gen_test.dart';
 import 'package:game_test_bonfire/global/levels/planet_surface.dart';
 import 'package:game_test_bonfire/global/levels/solar_system.dart';
 import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'package:game_test_bonfire/global/solar_system.dart';
+import 'package:helpers/helpers.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -52,10 +56,10 @@ class _MyHomePageState extends State<MyHomePage> {
             child: CircularProgressIndicator(),
           );
         } else {
-          // return PlanetSurface();
-          SolarSystem system =
-              SolarSystem(solarSystemData: state.currentSolarSystem!);
-          return LevelMap(system: system);
+          return PlanetSurface();
+          // SolarSystem system =
+          //     SolarSystem(solarSystemData: state.currentSolarSystem!);
+          // return LevelMap(system: system);
         }
       },
     );
