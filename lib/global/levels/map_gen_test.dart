@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:bonfire/bonfire.dart';
 import 'package:fast_noise/fast_noise.dart';
+import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:helpers/helpers.dart';
 import 'package:collection/collection.dart';
@@ -25,29 +27,61 @@ Map<double, String> matrixMappingToMap = {
   7: 'r',
 };
 
-List<List<double>> mapToMatrix({
+List<List<double>>? mapStringToDouble(List<List<String>>? rawMap) {
+  if (rawMap != null) {
+    List<List<double>> matrixMap = List.generate(
+        rawMap.length, (index) => List.generate(rawMap.length, (index) => 1));
+    List.generate(
+        rawMap.length, (index) => List.generate(rawMap.length, (index) => 1));
+    for (int i = 0; i < rawMap.length; i++) {
+      for (int j = 0; j < rawMap.length; j++) {
+        matrixMap[i][j] = mapToMatrixMapping[rawMap[i][j]] ?? 1;
+      }
+    }
+    return matrixMap;
+  } else {
+    return null;
+  }
+}
+
+List<List<String>>? mapDoubleToString(List<List<double>>? rawMap) {
+  if (rawMap != null) {
+    List<List<String>> matrixMap = List.generate(
+        rawMap.length, (index) => List.generate(rawMap.length, (index) => 'L'));
+    for (int i = 0; i < rawMap.length; i++) {
+      for (int j = 0; j < rawMap.length; j++) {
+        matrixMap[i][j] = matrixMappingToMap[rawMap[i][j]] ?? 'L';
+      }
+    }
+    return matrixMap;
+  } else {
+    return null;
+  }
+}
+
+List<List<double>> mapToMatrix(
+  int mapNodeX,
+  int mapNodeY, {
   List<String>? topEdge,
   List<String>? bottomEdge,
   List<String>? leftEdge,
   List<String>? rightEdge,
 }) {
   List<List<String>> rawMap = mapTest(
+    mapNodeX,
+    mapNodeY,
     topEdge: topEdge,
     bottomEdge: bottomEdge,
     leftEdge: leftEdge,
     rightEdge: rightEdge,
   );
-  List<List<double>> matrixMap = List.generate(
-      rawMap.length, (index) => List.generate(rawMap.length, (index) => 1));
-  for (int i = 0; i < rawMap.length; i++) {
-    for (int j = 0; j < rawMap.length; j++) {
-      matrixMap[i][j] = mapToMatrixMapping[rawMap[i][j]] ?? 1;
-    }
-  }
-  return matrixMap;
+
+  return mapStringToDouble(rawMap)!;
 }
 
-List<List<String>> mapTest({
+List<List<String>> mapTest(
+  int mapNodeX,
+  int mapNodeY, {
   List<String>? topEdge,
   List<String>? bottomEdge,
   List<String>? leftEdge,
@@ -106,19 +140,32 @@ List<List<String>> mapTest({
       'scale': 30.0,
     },
   };
+  PlayerController playerController = BonfireInjector().get<PlayerController>();
+  List<List<String>>? topMap = mapDoubleToString(
+      playerController.planetMapGraph.getNode(mapNodeX, mapNodeY - 1)?.data);
+  List<List<String>>? leftMap = mapDoubleToString(
+      playerController.planetMapGraph.getNode(mapNodeX - 1, mapNodeY)?.data);
+  List<List<String>>? rightMap = mapDoubleToString(
+      playerController.planetMapGraph.getNode(mapNodeX + 1, mapNodeY)?.data);
+  List<List<String>>? bottomMap = mapDoubleToString(
+      playerController.planetMapGraph.getNode(mapNodeX, mapNodeY + 1)?.data);
 
   List<List<String>> combinedMap = generateCombinedMap(
     config,
-    topEdge: topEdge,
-    bottomEdge: bottomEdge,
-    leftEdge: leftEdge,
-    rightEdge: rightEdge,
+    mapNodeX,
+    mapNodeY,
+    topEdge: topEdge ?? topMap?.last,
+    bottomEdge: bottomEdge ?? bottomMap?.first,
+    leftEdge: leftEdge ?? leftMap?.map((e) => e.last).toList(),
+    rightEdge: rightEdge ?? rightMap?.map((e) => e.first).toList(),
   );
   return combinedMap;
 }
 
 List<List<String>> generateCombinedMap(
-  Map<String, dynamic> config, {
+  Map<String, dynamic> config,
+  int mapNodeX,
+  int mapNodeY, {
   List<String>? topEdge,
   List<String>? bottomEdge,
   List<String>? leftEdge,
