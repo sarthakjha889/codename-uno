@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:bonfire/bonfire.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_test_bonfire/global/characters/player/player.dart';
@@ -19,26 +20,48 @@ import 'package:helpers/helpers.dart';
 int count = 0;
 
 class PlanetSurface extends StatefulWidget {
-  const PlanetSurface({super.key});
+  final List<String>? topEdge;
+  final List<String>? bottomEdge;
+  final List<String>? leftEdge;
+  final List<String>? rightEdge;
+
+  const PlanetSurface({
+    super.key,
+    this.topEdge,
+    this.bottomEdge,
+    this.leftEdge,
+    this.rightEdge,
+  });
 
   @override
   State<PlanetSurface> createState() => _PlanetSurfaceState();
 }
 
 class _PlanetSurfaceState extends State<PlanetSurface> {
-  PlayerController playerController = PlayerController();
+  late PlayerController playerController;
   @override
   void initState() {
     super.initState();
-    BonfireInjector().put((i) => playerController);
+    try {
+      playerController = BonfireInjector().get<PlayerController>();
+    } catch (e) {
+      playerController = PlayerController();
+      BonfireInjector().put((i) => playerController);
+    }
     BonfireInjector().put((i) => GameController());
   }
 
   @override
   Widget build(BuildContext context) {
-    List<List<double>> map = mapToMatrix();
-
+    List<List<double>> map = mapToMatrix(
+      topEdge: widget.topEdge,
+      bottomEdge: widget.bottomEdge,
+      leftEdge: widget.leftEdge,
+      rightEdge: widget.rightEdge,
+    );
+    playerController.currentMap = map;
     PlayerCharacter player = PlayerCharacter(Alfred.getMapCenter());
+
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
       builder: (context, state) {
@@ -104,15 +127,15 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           ),
           player: player,
           cameraConfig: CameraConfig(
-            moveOnlyMapArea: true,
+            // moveOnlyMapArea: true,
             setZoomLimitToFitMap: true,
             angle: 45 * pi / 180,
             target: player,
             sizeMovementWindow: Vector2(50, 50),
-            // zoom: 0.1,
-            zoom: MediaQuery.of(context).size.shortestSide > 800
-                ? MediaQuery.of(context).size.shortestSide / 1500
-                : MediaQuery.of(context).size.shortestSide / 1000,
+            zoom: 0.1,
+            // zoom: MediaQuery.of(context).size.shortestSide > 800
+            //     ? MediaQuery.of(context).size.shortestSide / 1500
+            //     : MediaQuery.of(context).size.shortestSide / 1000,
           ),
           gameController: BonfireInjector().get<GameController>(),
           map: MatrixMapGenerator.generate(

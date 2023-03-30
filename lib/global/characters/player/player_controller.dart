@@ -19,10 +19,20 @@ class PlayerController extends StateController<Player> {
   asy.Timer? rangeAttackTimer;
   int gemCount = 0;
   bool shouldAutoRangeAttack = true;
+  late List<List<double>> currentMap;
+  bool canChangePlanetMap = false;
 
   PlayerController() {
     currentDayTimeType = Alfred.getRandomValueFromList(DayTimeType.values);
-    // currentDayTimeType = DayTimeType.day;
+    currentDayTimeType = DayTimeType.day;
+    resetPlayerCanChangePlanetMap();
+  }
+
+  resetPlayerCanChangePlanetMap() {
+    canChangePlanetMap = false;
+    Future.delayed(const Duration(seconds: 3), () {
+      canChangePlanetMap = true;
+    });
   }
 
   asy.Timer? getAutoRangeAttackScheduler() {

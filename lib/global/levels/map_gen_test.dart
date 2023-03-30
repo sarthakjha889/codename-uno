@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fast_noise/fast_noise.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:helpers/helpers.dart';
+import 'package:collection/collection.dart';
 
 Map<String, double> mapToMatrixMapping = {
   'L': 1,
@@ -14,8 +15,28 @@ Map<String, double> mapToMatrixMapping = {
   'r': 7,
 };
 
-List<List<double>> mapToMatrix() {
-  List<List<String>> rawMap = mapTest();
+Map<double, String> matrixMappingToMap = {
+  1: 'L',
+  2: '~',
+  3: 'T',
+  4: 'w',
+  5: 'R',
+  6: 'i',
+  7: 'r',
+};
+
+List<List<double>> mapToMatrix({
+  List<String>? topEdge,
+  List<String>? bottomEdge,
+  List<String>? leftEdge,
+  List<String>? rightEdge,
+}) {
+  List<List<String>> rawMap = mapTest(
+    topEdge: topEdge,
+    bottomEdge: bottomEdge,
+    leftEdge: leftEdge,
+    rightEdge: rightEdge,
+  );
   List<List<double>> matrixMap = List.generate(
       rawMap.length, (index) => List.generate(rawMap.length, (index) => 1));
   for (int i = 0; i < rawMap.length; i++) {
@@ -23,11 +44,15 @@ List<List<double>> mapToMatrix() {
       matrixMap[i][j] = mapToMatrixMapping[rawMap[i][j]] ?? 1;
     }
   }
-  printMap(rawMap);
   return matrixMap;
 }
 
-List<List<String>> mapTest() {
+List<List<String>> mapTest({
+  List<String>? topEdge,
+  List<String>? bottomEdge,
+  List<String>? leftEdge,
+  List<String>? rightEdge,
+}) {
   final Map<String, dynamic> config = {
     'width': 30,
     'height': 30,
@@ -82,26 +107,53 @@ List<List<String>> mapTest() {
     },
   };
 
-  List<List<String>> combinedMap = generateCombinedMap(config);
+  List<List<String>> combinedMap = generateCombinedMap(
+    config,
+    topEdge: topEdge,
+    bottomEdge: bottomEdge,
+    leftEdge: leftEdge,
+    rightEdge: rightEdge,
+  );
   return combinedMap;
 }
 
-List<List<String>> generateCombinedMap(Map<String, dynamic> config) {
-  List<List<String>> landWaterMap = generateLandAndWater(config);
-  List<List<String>> treesRuinsPlantsMap =
-      generateTreesRuinsPlants(config, landWaterMap);
+List<List<String>> generateCombinedMap(
+  Map<String, dynamic> config, {
+  List<String>? topEdge,
+  List<String>? bottomEdge,
+  List<String>? leftEdge,
+  List<String>? rightEdge,
+}) {
+  List<List<String>> landWaterMap = generateLandAndWater(
+    config,
+    topEdge: topEdge,
+    bottomEdge: bottomEdge,
+    leftEdge: leftEdge,
+    rightEdge: rightEdge,
+  );
+  List<List<String>> treesRuinsPlantsMap = generateTreesRuinsPlants(
+    config,
+    landWaterMap,
+    topEdge: topEdge,
+    bottomEdge: bottomEdge,
+    leftEdge: leftEdge,
+    rightEdge: rightEdge,
+  );
   List<List<String>> combinedMap =
       combineMaps(landWaterMap, treesRuinsPlantsMap, config);
   List<List<String>> mapWithPOIs = generatePOIs(combinedMap, config);
-  List<List<String>> finalMap = connectPOIs(mapWithPOIs, config);
+  List<List<String>> finalMap =
+      createPathsForTileTypes(mapWithPOIs, ['i', 'R']);
   return finalMap;
 }
 
-List<List<String>> generateLandAndWater(Map<String, dynamic> config,
-    {List<String>? topEdge,
-    List<String>? bottomEdge,
-    List<String>? leftEdge,
-    List<String>? rightEdge}) {
+List<List<String>> generateLandAndWater(
+  Map<String, dynamic> config, {
+  List<String>? topEdge,
+  List<String>? bottomEdge,
+  List<String>? leftEdge,
+  List<String>? rightEdge,
+}) {
   int height = config['height'];
   int width = config['width'];
   double initialLandRatio = config['landWater']['landRatio'];
@@ -328,97 +380,6 @@ List<List<String>> generatePOIs(
   return map;
 }
 
-List<List<String>> connectPOIs(
-    List<List<String>> map, Map<String, dynamic> config) {
-  int width = config['width'];
-  int height = config['height'];
-
-  List<Point> pois = [];
-
-  for (int y = 1; y < height - 1; y++) {
-    for (int x = 1; x < width - 1; x++) {
-      if (map[y][x] == 'i') {
-        pois.add(Point(x, y));
-      }
-    }
-  }
-  void createPath(Point start, Point end) {
-    Point current = start;
-    int maxIterations = 1000;
-    int iterations = 0;
-    double zigzagProbability = 0.3;
-
-    while (current != end && iterations < maxIterations) {
-      List<Point> possibleMoves = [
-        Point(current.x + 1, current.y),
-        Point(current.x - 1, current.y),
-        Point(current.x, current.y + 1),
-        Point(current.x, current.y - 1),
-      ];
-
-      // Filter out moves that are out of the map boundaries
-      possibleMoves = possibleMoves.where((move) {
-        return move.x >= 1 &&
-            move.x < width - 1 &&
-            move.y >= 1 &&
-            move.y < height - 1;
-      }).toList();
-
-      // Filter out moves that would create a path thicker than 2 tiles
-      possibleMoves = possibleMoves.where((move) {
-        int adjacentRoadCount = 0;
-        for (int dx = -1; dx <= 1; dx++) {
-          for (int dy = -1; dy <= 1; dy++) {
-            if (dx == 0 && dy == 0) continue;
-            if (map[move.y + dy][move.x + dx] == 'r') adjacentRoadCount++;
-          }
-        }
-        return adjacentRoadCount <= 2;
-      }).toList();
-
-      if (possibleMoves.isNotEmpty) {
-        Point nextMove = possibleMoves[Random().nextInt(possibleMoves.length)];
-
-        if (map[nextMove.y][nextMove.x] != 'W' &&
-            map[nextMove.y][nextMove.x] != 'i') {
-          if (map[current.y][current.x] != 'i') {
-            map[current.y][current.x] = 'r';
-          }
-        }
-        current = nextMove;
-      }
-
-      iterations++;
-    }
-  }
-
-  for (int i = 0; i < pois.length - 1; i++) {
-    createPath(pois[i], pois[i + 1]);
-  }
-
-  List<Point> edgePoints = [
-    Point(0, Random().nextInt(height)),
-    Point(width - 1, Random().nextInt(height)),
-    Point(Random().nextInt(width), 0),
-    Point(Random().nextInt(width), height - 1),
-  ];
-
-  for (Point poi in pois) {
-    Point edgePoint = edgePoints[Random().nextInt(edgePoints.length)];
-    createPath(poi, edgePoint);
-  }
-
-  // Create additional paths between random POIs to sprawl paths all over the map
-  int additionalPaths = Random().nextInt(pois.length);
-  for (int i = 0; i < additionalPaths; i++) {
-    Point start = pois[Random().nextInt(pois.length)];
-    Point end = pois[Random().nextInt(pois.length)];
-    createPath(start, end);
-  }
-
-  return map;
-}
-
 void printMap(List<List<dynamic>> map) {
   for (int y = 0; y < map.length; y++) {
     for (int x = 0; x < map[y].length; x++) {
@@ -429,10 +390,14 @@ void printMap(List<List<dynamic>> map) {
 }
 
 class Point {
-  final int x;
-  final int y;
+  int x;
+  int y;
 
   Point(this.x, this.y);
+
+  double distanceTo(Point other) {
+    return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2));
+  }
 
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -442,4 +407,205 @@ class Point {
           y == other.y;
 
   int get hashCode => x.hashCode ^ y.hashCode;
+}
+
+class Rectangle {
+  Point topLeft;
+  Point bottomRight;
+
+  Rectangle(this.topLeft, this.bottomRight);
+
+  bool contains(Point point) {
+    return point.x >= topLeft.x &&
+        point.x <= bottomRight.x &&
+        point.y >= topLeft.y &&
+        point.y <= bottomRight.y;
+  }
+
+  Point randomPointInside() {
+    Random random = Random();
+    int x = random.nextInt(bottomRight.x - topLeft.x + 1) + topLeft.x;
+    int y = random.nextInt(bottomRight.y - topLeft.y + 1) + topLeft.y;
+    return Point(x, y);
+  }
+}
+
+List<List<Point>> kMeansClustering(List<Point> points, int k) {
+  // Initialize cluster centroids randomly
+  List<Point> centroids = List.generate(k, (_) {
+    int randomIndex = Random().nextInt(points.length);
+    return Point(points[randomIndex].x, points[randomIndex].y);
+  });
+
+  List<List<Point>> clusters = List.generate(k, (_) => []);
+
+  bool centroidsChanged = true;
+  while (centroidsChanged) {
+    centroidsChanged = false;
+    // Assign points to the closest centroid
+    for (Point point in points) {
+      int closestCentroidIndex = 0;
+      double minDistance = double.infinity;
+
+      for (int i = 0; i < centroids.length; i++) {
+        double distance = point.distanceTo(centroids[i]);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestCentroidIndex = i;
+        }
+      }
+
+      clusters[closestCentroidIndex].add(point);
+    }
+
+    // Update centroids based on the mean of the assigned points
+    for (int i = 0; i < centroids.length; i++) {
+      if (clusters[i].isEmpty) continue;
+
+      int sumX = 0;
+      int sumY = 0;
+      for (Point point in clusters[i]) {
+        sumX += point.x;
+        sumY += point.y;
+      }
+
+      int meanX = sumX ~/ clusters[i].length;
+      int meanY = sumY ~/ clusters[i].length;
+      Point newCentroid = Point(meanX, meanY);
+
+      if (centroids[i].distanceTo(newCentroid) > 0) {
+        centroidsChanged = true;
+        centroids[i] = newCentroid;
+      }
+    }
+  }
+
+  return clusters;
+}
+
+List<Rectangle> createRectangles(List<List<Point>> clusters) {
+  List<Rectangle> rectangles = [];
+
+  for (List<Point> cluster in clusters) {
+    int minX = cluster[0].x;
+    int maxX = cluster[0].x;
+    int minY = cluster[0].y;
+    int maxY = cluster[0].y;
+
+    for (Point point in cluster) {
+      minX = min(minX, point.x);
+      maxX = max(maxX, point.x);
+      minY = min(minY, point.y);
+      maxY = max(maxY, point.y);
+    }
+
+    rectangles.add(Rectangle(Point(minX, minY), Point(maxX, maxY)));
+  }
+
+  return rectangles;
+}
+
+void createPath(Point start, Point end, List<List<String>> map) {
+  int height = map.length;
+  int width = height;
+  Point current = start;
+  int maxIterations = 1000;
+  int iterations = 0;
+  double diagonalProbability = 0.3;
+
+  while (current != end && iterations < maxIterations) {
+    List<Point> possibleMoves = [
+      Point(current.x + 1, current.y),
+      Point(current.x - 1, current.y),
+      Point(current.x, current.y + 1),
+      Point(current.x, current.y - 1),
+    ];
+
+    if (Random().nextDouble() < diagonalProbability) {
+      possibleMoves.addAll([
+        Point(current.x + 1, current.y + 1),
+        Point(current.x - 1, current.y - 1),
+        Point(current.x - 1, current.y + 1),
+        Point(current.x + 1, current.y - 1),
+      ]);
+    }
+
+    possibleMoves
+        .sort((a, b) => (a.distanceTo(end)).compareTo(b.distanceTo(end)));
+
+    // Filter out moves that would create a path thicker than 1 tile
+    possibleMoves = possibleMoves.where((move) {
+      int adjacentRoadCount = 0;
+      for (int dx = -1; dx <= 1; dx += 2) {
+        for (int dy = -1; dy <= 1; dy += 2) {
+          int newX = move.x + dx;
+          int newY = move.y + dy;
+          if (newX >= 0 &&
+              newX < width &&
+              newY >= 0 &&
+              newY < height &&
+              map[newY][newX] == 'r') {
+            adjacentRoadCount++;
+          }
+        }
+      }
+      return adjacentRoadCount <= 1;
+    }).toList();
+
+    Point nextMove = possibleMoves.firstWhere(
+        (move) =>
+            move.x >= 0 && move.x < width && move.y >= 0 && move.y < height,
+        orElse: () => current);
+
+    if (map[nextMove.y][nextMove.x] != 'W' &&
+        map[nextMove.y][nextMove.x] != 'i') {
+      if (map[current.y][current.x] != 'i') {
+        map[current.y][current.x] = 'r';
+      }
+    }
+
+    current = nextMove;
+    iterations++;
+  }
+}
+
+void connectClustersWithRectangles(
+    List<List<Point>> clusters, List<List<String>> map) {
+  List<Rectangle> rectangles = createRectangles(clusters);
+
+  for (int i = 0; i < rectangles.length; i++) {
+    for (int j = i + 1; j < rectangles.length; j++) {
+      Point start = rectangles[i].randomPointInside();
+      Point end = rectangles[j].randomPointInside();
+      createPath(start, end, map);
+    }
+  }
+}
+
+List<List<String>> createPathsForTileTypes(
+    List<List<String>> map, List<String> tileTypes) {
+  int width = map[0].length;
+  int height = map.length;
+
+  List<Point> getTilesByTypes(List<String> types) {
+    List<Point> result = [];
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (types.contains(map[y][x])) {
+          result.add(Point(x, y));
+        }
+      }
+    }
+    return result;
+  }
+
+  List<Point> tiles = getTilesByTypes(tileTypes);
+
+  for (int i = 0; i < tiles.length; i++) {
+    for (int j = i + 1; j < tiles.length; j++) {
+      createPath(tiles[i], tiles[j], map);
+    }
+  }
+
+  return map;
 }

@@ -32,7 +32,7 @@ class PlayerCharacter extends SimplePlayer
   double maxRangedAttackSpeed = 3000;
 
   double nightVisionMultiplier = 2;
-  double movementSpeedMultiplier = 1;
+  double movementSpeedMultiplier = 3;
   double rangedAttackSpeedMultiplier = 1;
   double rangedAttackIntervalMultiplier = 1;
 

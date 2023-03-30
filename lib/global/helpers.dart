@@ -45,14 +45,25 @@ class Alfred {
 
   static List<GameDecoration> getMapBoundaries() {
     List<GameDecoration> mapBoundary = [];
-    for (double i = 0; i < 25; i++) {
-      mapBoundary.add(MapBoundaryTile(Vector2(0, i * Alfred.tileSize)));
-      mapBoundary.add(MapBoundaryTile(Vector2(i * Alfred.tileSize, 0)));
-      mapBoundary.add(MapBoundaryTile(Vector2(i * Alfred.tileSize,
-          ((Alfred.mapSize - 1) * Alfred.tileSize).toDouble())));
-      mapBoundary.add(MapBoundaryTile(Vector2(
-          ((Alfred.mapSize - 1) * Alfred.tileSize).toDouble(),
-          i * Alfred.tileSize)));
+    for (double i = 0; i < mapSize; i++) {
+      mapBoundary.add(MapBoundaryTile(
+        Vector2(0, i * Alfred.tileSize),
+        side: MapBoundarySide.left,
+      ));
+      mapBoundary.add(MapBoundaryTile(
+        Vector2(i * Alfred.tileSize, 0),
+        side: MapBoundarySide.top,
+      ));
+      mapBoundary.add(MapBoundaryTile(
+        Vector2(i * Alfred.tileSize,
+            ((Alfred.mapSize - 1) * Alfred.tileSize).toDouble()),
+        side: MapBoundarySide.bottom,
+      ));
+      mapBoundary.add(MapBoundaryTile(
+        Vector2(((Alfred.mapSize - 1) * Alfred.tileSize).toDouble(),
+            i * Alfred.tileSize),
+        side: MapBoundarySide.right,
+      ));
     }
     return mapBoundary;
   }
@@ -173,6 +184,15 @@ class Alfred {
                     (Alfred.tileSize * j).toDouble() - (Alfred.tileSize / 2),
                   ),
                 ));
+        } else if (map[j][i] == 2) {
+          list.add(
+            MapBoundaryTile(
+              Vector2(
+                (i * Alfred.tileSize).toDouble(),
+                (Alfred.tileSize * j).toDouble(),
+              ),
+            ),
+          );
         }
       }
     }
