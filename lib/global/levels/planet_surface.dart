@@ -25,6 +25,7 @@ class PlanetSurface extends StatefulWidget {
   final List<String>? leftEdge;
   final List<String>? rightEdge;
   final List<List<double>>? mapNode;
+  final Vector2? playerPosition;
 
   const PlanetSurface({
     super.key,
@@ -33,6 +34,7 @@ class PlanetSurface extends StatefulWidget {
     this.leftEdge,
     this.rightEdge,
     this.mapNode,
+    this.playerPosition,
   });
 
   @override
@@ -43,7 +45,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
   late PlayerController playerController;
   bool isLoading = true;
   late List<List<double>> map;
-
+  late PlayerCharacter player;
   @override
   void initState() {
     super.initState();
@@ -66,6 +68,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
           rightEdge: widget.rightEdge,
         );
     playerController.currentMap = map;
+    player = PlayerCharacter(widget.playerPosition ?? Alfred.getMapCenter());
     setState(() {
       isLoading = false;
     });
@@ -73,8 +76,6 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
 
   @override
   Widget build(BuildContext context) {
-    PlayerCharacter player = PlayerCharacter(Alfred.getMapCenter());
-
     return BlocBuilder<GameStateController, GameState>(
       bloc: gameStateController,
       builder: (context, state) {
@@ -88,7 +89,7 @@ class _PlanetSurfaceState extends State<PlanetSurface> {
                 overlayBuilderMap: {
                   'minimap': (context, game) => MiniMap(
                         game: game,
-                        zoom: 0.2,
+                        zoom: 6,
                         margin: const EdgeInsets.all(20),
                         borderRadius: BorderRadius.circular(10),
                         size: Vector2.all(100),

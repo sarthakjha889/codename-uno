@@ -4,8 +4,6 @@ import 'package:bonfire/bonfire.dart';
 import 'package:fast_noise/fast_noise.dart';
 import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
-import 'package:helpers/helpers.dart';
-import 'package:collection/collection.dart';
 
 Map<String, double> mapToMatrixMapping = {
   'L': 1,
@@ -191,6 +189,8 @@ List<List<String>> generateCombinedMap(
   List<List<String>> mapWithPOIs = generatePOIs(combinedMap, config);
   List<List<String>> finalMap =
       createPathsForTileTypes(mapWithPOIs, ['i', 'R']);
+  int centre = Alfred.mapSize ~/ 2;
+  finalMap[centre][centre] = 'L';
   return finalMap;
 }
 

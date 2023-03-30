@@ -15,6 +15,39 @@ import 'package:game_test_bonfire/global/objects/map_boundary_tile.dart';
 import 'package:game_test_bonfire/main.dart';
 import 'package:helpers/helpers.dart';
 
+typedef Condition<T> = bool Function(T value);
+
+List<int>? findClosestElement<T>(
+    List<List<T>> array, int rowIndex, int colIndex, Condition<T> condition) {
+  var closestElement;
+  var closestRow = -1;
+  var closestCol = -1;
+  var closestDistance = double.infinity;
+
+  // Iterate through all elements in the array
+  for (var row = 0; row < array.length; row++) {
+    for (var col = 0; col < array[row].length; col++) {
+      // Check if the current element fulfills the condition
+      final element = array[row][col];
+      if (condition(element)) {
+        // Calculate the distance from the current element to the target index
+        final distance = (row - rowIndex).abs() + (col - colIndex).abs();
+
+        // Update the closest element if the current element is closer
+        if (distance < closestDistance) {
+          closestElement = element;
+          closestRow = row;
+          closestCol = col;
+          closestDistance = distance.toDouble();
+        }
+      }
+    }
+  }
+
+  // Return the row and column index of the closest element, or null if no element fulfills the condition
+  return closestRow >= 0 && closestCol >= 0 ? [closestRow, closestCol] : null;
+}
+
 class PlayerController extends StateController<Player> {
   late DayTimeType currentDayTimeType;
   asy.Timer? dayCycleTimer;
@@ -32,8 +65,8 @@ class PlayerController extends StateController<Player> {
   MapGraph<List<List<double>>> planetMapGraph = MapGraph();
 
   PlayerController() {
-    // currentDayTimeType = Alfred.getRandomValueFromList(DayTimeType.values);
-    currentDayTimeType = DayTimeType.day;
+    currentDayTimeType = Alfred.getRandomValueFromList(DayTimeType.values);
+    // currentDayTimeType = DayTimeType.day;
     resetPlayerCanChangePlanetMap();
   }
 
@@ -41,10 +74,10 @@ class PlayerController extends StateController<Player> {
   void onReady(Player component) {
     player = component as PlayerCharacter;
     currentEnemies = 0;
-    // player?.toggleLighting(true);
+    player?.toggleLighting(true);
     super.onReady(component);
-    // handleDayTimeCycle();
-    // spawnEnemiesHandler();
+    handleDayTimeCycle();
+    spawnEnemiesHandler();
     rangeAttackTimer = getAutoRangeAttackScheduler();
   }
 
@@ -97,22 +130,28 @@ class PlayerController extends StateController<Player> {
       List<String>? bottomEdge;
       List<String>? leftEdge;
       List<String>? rightEdge;
+      int upcomingRowIndex = player!.position.y ~/ Alfred.tileSize;
+      int upcomingColIndex = player!.position.x ~/ Alfred.tileSize;
       switch (side) {
         case MapBoundarySide.top:
           bottomEdge = matrixMap?.first;
           currentMapNodeY++;
+          upcomingRowIndex = Alfred.mapSize - 2;
           break;
         case MapBoundarySide.bottom:
           topEdge = matrixMap?.last;
           currentMapNodeY--;
+          upcomingRowIndex = 2;
           break;
         case MapBoundarySide.left:
           rightEdge = matrixMap?.map((e) => e.first).toList();
           currentMapNodeX++;
+          upcomingColIndex = Alfred.mapSize - 2;
           break;
         case MapBoundarySide.right:
           leftEdge = matrixMap?.map((e) => e.last).toList();
           currentMapNodeX--;
+          upcomingColIndex = 2;
           break;
         default:
       }
@@ -126,13 +165,34 @@ class PlayerController extends StateController<Player> {
                 rightEdge: rightEdge,
               );
       resetPlayerCanChangePlanetMap();
+      List<int>? coords = findClosestElement(
+        newMap,
+        upcomingRowIndex,
+        upcomingColIndex,
+        (value) =>
+            value == mapToMatrixMapping['L'] ||
+            value == mapToMatrixMapping['r'],
+      );
+      if (coords != null) {
+        upcomingRowIndex = coords[1];
+        upcomingColIndex = coords[0];
+      }
+
       Alfred.pushNewLevel(
         context: context,
         destination: PlanetSurface(
           mapNode: newMap,
+          playerPosition: Vector2(
+            (upcomingRowIndex * Alfred.tileSize).toDouble(),
+            (upcomingColIndex * Alfred.tileSize).toDouble(),
+          ),
         ),
       );
     }
+  }
+
+  void setPlayerPosition(Vector2 position) {
+    player?.position = position;
   }
 
   resetPlayerCanChangePlanetMap() {
