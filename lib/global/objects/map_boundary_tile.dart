@@ -54,3 +54,37 @@ class MapBoundaryTile extends GameDecoration with ObjectCollision, Sensor {
     }
   }
 }
+
+class WaterTile extends GameDecoration with ObjectCollision {
+  WaterTile(Vector2 tilePosition)
+      : super(
+          position: tilePosition,
+          size: Vector2(
+            Alfred.tileSize.toDouble(),
+            Alfred.tileSize.toDouble(),
+          ),
+        ) {
+    position = tilePosition;
+    setupCollision(
+      CollisionConfig(
+        enable: true,
+        collisions: [
+          CollisionArea.rectangle(
+            size: Vector2(
+              Alfred.tileSize.toDouble(),
+              Alfred.tileSize.toDouble(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  @override
+  bool onCollision(GameComponent component, bool active) {
+    if (component is FlyingAttackObject) {
+      return false;
+    } else {
+      return super.onCollision(component, active);
+    }
+  }
+}

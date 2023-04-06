@@ -23,31 +23,30 @@ class LevelMap extends StatelessWidget {
     return BonfireWidget(
       lightingColorGame: Colors.white.withOpacity(0.01),
       overlayBuilderMap: {
-        'miniMap': (context, game) => MiniMap(
-              game: game,
-              zoom: 0.3,
-              margin: const EdgeInsets.all(20),
-              borderRadius: BorderRadius.circular(10),
-              size: Vector2.all(100),
-              border: Border.all(color: Colors.white.withOpacity(0.5)),
-            ),
-        'mapView': (context, game) => ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const GalaxyMap(),
-                  ),
-                );
-              },
-              child: const Text('Open map'),
+        'mapView': (context, game) => Positioned(
+              top: 16,
+              left: 16,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const GalaxyMap(),
+                    ),
+                  );
+                },
+                child: const Text('Galaxy map'),
+              ),
             ),
       },
       decorations: system.getDecorations(),
       initialActiveOverlays: const [
-        'miniMap',
         'mapView',
       ],
       joystick: Joystick(
+        keyboardConfig: KeyboardConfig(
+          enable: true,
+          keyboardDirectionalType: KeyboardDirectionalType.wasdAndArrows,
+        ),
         directional: JoystickDirectional(isFixed: false),
       ),
       player: player,

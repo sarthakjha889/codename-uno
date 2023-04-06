@@ -52,20 +52,20 @@ class EnemySpriteSheet {
 
 class MyEnemy extends SimpleEnemy with ObjectCollision, UseBarLife {
   PlayerController playerController = BonfireInjector().get<PlayerController>();
-  int minAttack = 10;
-  int maxAttack = 100;
-  double attackMultiplier = 1;
+  int minAttack = 50;
+  int maxAttack = 200;
+  double attackMultiplier = 10;
   double visionMultiplier = 15;
-  double currentSize = 128;
+  double currentSize = Alfred.tileSize / 2;
   double sizeMultiplier = 1;
 
   MyEnemy(Vector2 position)
       : super(
           animation: EnemySpriteSheet.simpleDirectionAnimation,
           position: position,
-          size: Vector2.all(128),
+          size: Vector2.all(Alfred.tileSize / 2),
           life: 1000,
-          speed: 400,
+          speed: 700,
         ) {
     /// here we configure collision of the enemy
     setupCollision(

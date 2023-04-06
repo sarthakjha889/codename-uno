@@ -86,8 +86,8 @@ List<List<String>> mapTest(
   List<String>? rightEdge,
 }) {
   final Map<String, dynamic> config = {
-    'width': 30,
-    'height': 30,
+    'width': Alfred.mapSize,
+    'height': Alfred.mapSize,
     'landWater': {
       'landRatio': 0.55,
       'smoothIterations': 10,
@@ -189,8 +189,6 @@ List<List<String>> generateCombinedMap(
   List<List<String>> mapWithPOIs = generatePOIs(combinedMap, config);
   List<List<String>> finalMap =
       createPathsForTileTypes(mapWithPOIs, ['i', 'R']);
-  int centre = Alfred.mapSize ~/ 2;
-  finalMap[centre][centre] = 'L';
   return finalMap;
 }
 

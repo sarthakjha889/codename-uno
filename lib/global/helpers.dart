@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:bonfire/bonfire.dart';
 import 'package:fast_noise/fast_noise.dart';
 import 'package:flutter/material.dart';
+import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
+import 'package:game_test_bonfire/global/levels/map_gen_test.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/bush.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/flower.dart';
 import 'package:game_test_bonfire/global/objects/decor/outdoor/grass.dart';
@@ -41,6 +43,28 @@ class Alfred {
       (mapSize / 2 * tileSize),
       (mapSize / 2 * tileSize),
     );
+  }
+
+  static Vector2 getMapTileClosestToCenter(
+      List<List<double>> map, String tileType) {
+    int centerTile = mapSize ~/ 2;
+    List<int>? centerLanding = findClosestElement(
+      map,
+      centerTile,
+      centerTile,
+      (value) => matrixMappingToMap[value] == tileType,
+    );
+    if (centerLanding != null) {
+      return Vector2(
+        (centerLanding[1] * Alfred.tileSize).toDouble(),
+        (centerLanding[0] * Alfred.tileSize).toDouble(),
+      );
+    } else {
+      return Vector2(
+        (mapSize / 2 * tileSize),
+        (mapSize / 2 * tileSize),
+      );
+    }
   }
 
   static List<GameDecoration> getMapBoundaries() {
@@ -186,7 +210,7 @@ class Alfred {
                 ));
         } else if (map[j][i] == 2) {
           list.add(
-            MapBoundaryTile(
+            WaterTile(
               Vector2(
                 (i * Alfred.tileSize).toDouble(),
                 (Alfred.tileSize * j).toDouble(),

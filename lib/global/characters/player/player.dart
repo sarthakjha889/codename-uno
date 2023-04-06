@@ -3,10 +3,12 @@ import 'dart:async' as asy;
 
 import 'package:bonfire/bonfire.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:game_test_bonfire/global/characters/player/player_controller.dart';
 import 'package:game_test_bonfire/global/characters/player/player_spritesheet.dart';
 import 'package:game_test_bonfire/global/helpers.dart';
 import 'package:collection/collection.dart';
+import 'package:helpers/helpers.dart';
 
 class PlayerCharacter extends SimplePlayer
     with
@@ -27,19 +29,19 @@ class PlayerCharacter extends SimplePlayer
   JoystickMoveDirectional _lastDirection = JoystickMoveDirectional.IDLE;
 
   int movementSpeed = 500;
-  int rangedAttackInterval = 2000;
-  int rangedAttackSpeed = 1000;
-  double maxRangedAttackSpeed = 3000;
+  int rangedAttackInterval = 500;
+  int rangedAttackSpeed = 4000;
+  double maxRangedAttackSpeed = 5000;
 
   double nightVisionMultiplier = 2;
-  double movementSpeedMultiplier = 3;
-  double rangedAttackSpeedMultiplier = 1;
+  double movementSpeedMultiplier = 2.5;
+  double rangedAttackSpeedMultiplier = 10;
   double rangedAttackIntervalMultiplier = 1;
 
   PlayerCharacter(Vector2 position)
       : super(
           position: position,
-          size: Vector2(128, 128),
+          size: Vector2.all(Alfred.tileSize / 2),
           animation: PlayerSpriteSheet.simpleDirectionAnimation,
           speed: 1,
           life: 5000,
@@ -153,10 +155,13 @@ class PlayerCharacter extends SimplePlayer
     }
     if (hasController) {
       if (event.event == ActionEvent.DOWN) {
-        if (event.id == 'attack-range' && gameRef.livingEnemies().isNotEmpty) {
+        if ((event.id == 'attack-range' ||
+                event.id == LogicalKeyboardKey.space.keyId) &&
+            gameRef.livingEnemies().isNotEmpty) {
           execRangeSpecialAttack();
         }
-        if (event.id == 'attack-melee') {
+        if (event.id == 'attack-melee' ||
+            event.id == LogicalKeyboardKey.enter.keyId) {
           execMeleeAttack(
             Alfred.getRandomNumber(min: 100, max: 500).toDouble(),
           );
@@ -177,10 +182,10 @@ class PlayerCharacter extends SimplePlayer
 
   void execRangeSpecialAttack() {
     int attackCount = 0;
-    int maxAttackLimit = 100;
+    int maxAttackLimit = 50;
     controller.shouldAutoRangeAttack = false;
     double angle = 0;
-    asy.Timer.periodic(const Duration(milliseconds: 10), (timer) {
+    asy.Timer.periodic(const Duration(milliseconds: 5), (timer) {
       if (attackCount++ < maxAttackLimit) {
         if (angle > 360) {
           angle = 0;
@@ -188,7 +193,7 @@ class PlayerCharacter extends SimplePlayer
         execRangeAttack(
           Alfred.getRandomNumber(min: 100, max: 999).toDouble(),
           angle: angle++,
-          speed: rangedAttackSpeedMultiplier * rangedAttackSpeed * 3,
+          speed: rangedAttackSpeedMultiplier * rangedAttackSpeed * 10,
         );
       } else {
         controller.shouldAutoRangeAttack = true;
@@ -253,6 +258,15 @@ class PlayerCharacter extends SimplePlayer
     removeFromParent();
     gameRef.lighting?.animateToColor(Colors.red.withOpacity(0.5));
     super.die();
+  }
+
+  @override
+  bool onCollision(GameComponent component, bool active) {
+    if (component is FlyingAttackObject) {
+      return false;
+    } else {
+      return super.onCollision(component, active);
+    }
   }
 
   @override
