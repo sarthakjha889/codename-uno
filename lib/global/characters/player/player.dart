@@ -44,7 +44,7 @@ class PlayerCharacter extends SimplePlayer
           size: Vector2.all(Alfred.tileSize / 2),
           animation: PlayerSpriteSheet.simpleDirectionAnimation,
           speed: 1,
-          life: 5000,
+          life: 2500,
         ) {
     dPadAngles = false;
     setPlayerMovementSpeed();

@@ -51,7 +51,7 @@ List<int>? findClosestElement<T>(
 class PlayerController extends StateController<Player> {
   late DayTimeType currentDayTimeType;
   asy.Timer? dayCycleTimer;
-  final int maxEnemies = 99;
+  final int maxEnemies = 50;
   int currentEnemies = 0;
   asy.Timer? enemySpawnTimer;
   PlayerCharacter? player;
@@ -231,7 +231,7 @@ class PlayerController extends StateController<Player> {
 
   void spawnEnemiesHandler() {
     enemySpawnTimer =
-        asy.Timer.periodic(const Duration(seconds: 1), spawnEnemies);
+        asy.Timer.periodic(const Duration(milliseconds: 1500), spawnEnemies);
   }
 
   void spawnEnemies(_) {
@@ -260,6 +260,11 @@ class PlayerController extends StateController<Player> {
       gameRef.add(
         MyEnemy(
           Vector2(x + Alfred.tileSize, y + Alfred.tileSize),
+        ),
+      );
+      gameRef.add(
+        MyEnemy(
+          Vector2(x - Alfred.tileSize, y - Alfred.tileSize),
         ),
       );
     } else {
