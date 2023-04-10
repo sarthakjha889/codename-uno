@@ -29,14 +29,14 @@ class PlayerCharacter extends SimplePlayer
   JoystickMoveDirectional _lastDirection = JoystickMoveDirectional.IDLE;
 
   int movementSpeed = 500;
-  int rangedAttackInterval = 500;
-  int rangedAttackSpeed = 4000;
-  double maxRangedAttackSpeed = 5000;
+  int rangedAttackInterval = 1000;
+  int rangedAttackSpeed = 1000;
+  double maxRangedAttackSpeed = 3000;
 
   double nightVisionMultiplier = 2;
-  double movementSpeedMultiplier = 2.5;
-  double rangedAttackSpeedMultiplier = 10;
-  double rangedAttackIntervalMultiplier = 1;
+  double movementSpeedMultiplier = 1.75;
+  double rangedAttackSpeedMultiplier = 2;
+  double rangedAttackIntervalMultiplier = 1.4;
 
   PlayerCharacter(Vector2 position)
       : super(
@@ -185,7 +185,7 @@ class PlayerCharacter extends SimplePlayer
     int maxAttackLimit = 50;
     controller.shouldAutoRangeAttack = false;
     double angle = 0;
-    asy.Timer.periodic(const Duration(milliseconds: 5), (timer) {
+    asy.Timer.periodic(const Duration(milliseconds: 10), (timer) {
       if (attackCount++ < maxAttackLimit) {
         if (angle > 360) {
           angle = 0;
@@ -194,6 +194,7 @@ class PlayerCharacter extends SimplePlayer
           Alfred.getRandomNumber(min: 100, max: 999).toDouble(),
           angle: angle++,
           speed: rangedAttackSpeedMultiplier * rangedAttackSpeed * 10,
+          marginFromOrigin: 100,
         );
       } else {
         controller.shouldAutoRangeAttack = true;
@@ -206,6 +207,7 @@ class PlayerCharacter extends SimplePlayer
     double damage, {
     double? angle,
     double? speed,
+    double? marginFromOrigin,
   }) {
     List<Enemy> enemies = gameRef.livingEnemies().sortedByCompare(
           (element) => element.position,
@@ -220,7 +222,8 @@ class PlayerCharacter extends SimplePlayer
           Alfred.getRandomNumber(min: 0, max: 360).toDouble(),
       size: Vector2.all(width),
       damage: damage,
-      marginFromOrigin: ((gameRef.player?.size.x ?? 144) / 3),
+      marginFromOrigin:
+          marginFromOrigin ?? ((gameRef.player?.size.x ?? 144) / 3),
       collision: CollisionConfig(
         collisions: [
           CollisionArea.circle(

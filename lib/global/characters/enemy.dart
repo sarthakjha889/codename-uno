@@ -65,7 +65,7 @@ class MyEnemy extends SimpleEnemy with ObjectCollision, UseBarLife {
           position: position,
           size: Vector2.all(Alfred.tileSize / 2),
           life: 1000,
-          speed: 700,
+          speed: 500,
         ) {
     /// here we configure collision of the enemy
     setupCollision(

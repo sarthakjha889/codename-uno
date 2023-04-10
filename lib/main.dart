@@ -81,7 +81,7 @@ class _StartScreenState extends State<StartScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'An incomplete game',
+            'Codename Uno',
             style: TextStyle(
               fontSize: 72,
               fontStyle: FontStyle.normal,
