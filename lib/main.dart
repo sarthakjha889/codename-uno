@@ -8,6 +8,7 @@ import 'package:game_test_bonfire/global/model/game_state.dart';
 import 'package:game_test_bonfire/global/solar_system.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 GameStateController gameStateController = GameStateController();
 
@@ -103,7 +104,19 @@ class _StartScreenState extends State<StartScreen> {
                 },
                 child: const Text('Start game'),
               ),
-              const SizedBox(width: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: OutlinedButton(
+                  onPressed: () async {
+                    if (await canLaunchUrl(Uri.parse(
+                        'https://github.com/sarthak333/codename-uno'))) {
+                      launchUrl(Uri.parse(
+                          'https://github.com/sarthak333/codename-uno'));
+                    }
+                  },
+                  child: const Text('Github'),
+                ),
+              ),
               TextButton(
                 onPressed: () {
                   showDialog(
@@ -165,6 +178,10 @@ class _StartScreenState extends State<StartScreen> {
                 ),
                 Text(
                   '~ You can visit different solar systems via the Galaxy map button',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  '~ Go to the edge of the map on a planet surface to move to the next area.',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
